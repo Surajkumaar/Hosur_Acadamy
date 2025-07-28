@@ -45,7 +45,7 @@ const Inquiry = () => {
     } else if (enrollmentIntent) {
       setFormData(prev => ({
         ...prev,
-        message: 'I am interested in enrolling at EduMaster Academy. Please provide me with more information about your courses.'
+        message: 'I am interested in enrolling at Hosur Toppers Academy. Please provide me with more information about your courses.'
       }));
     }
   }, []);
@@ -420,9 +420,9 @@ const Inquiry = () => {
                       <Clock className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-[#002357] mb-1">Office Hours</h3>
-                      <p className="text-gray-600">Monday - Saturday: 9:00 AM - 6:00 PM</p>
-                      <p className="text-gray-600">Sunday: 10:00 AM - 4:00 PM</p>
+                      <h3 className="font-semibold text-[#002357] mb-1">Instution Hours</h3>
+                      <p className="text-gray-600">Monday - Saturday: 6:00 pm - 9:00 pm</p>
+                      <p className="text-gray-600">Sunday: 10:00 am - 1:00 pm</p>
                     </div>
                   </div>
                 </CardContent>

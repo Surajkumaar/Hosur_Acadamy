@@ -1,12 +1,12 @@
-// Mock data for EduMaster Academy
+// Mock data for Hosur Toppers Academy
 export const mockData = {
   institute: {
-    name: "EduMaster Academy",
+    name: "Hosur Toppers Academy",
     tagline: "Empowering Minds, Shaping Futures",
-    phone: "+91-9876543210",
-    whatsapp: "+91-9876543210",
-    email: "info@edumaster.com",
-    address: "123 Education Street, Knowledge City, IN 560001"
+    phone: "+91-8248587058",
+    whatsapp: "+91-8248587058",
+    email: "HosurToppersAcademy@gmail.com",
+    address: " 4/717, 5th Cross Rd, opp. Sivaranjani Hotel, Maruthi Nagar (Dharga), Hosur, Tamil Nadu 635126"
   },
   
   courses: [
@@ -81,68 +81,68 @@ export const mockData = {
   testimonials: [
     {
       id: 1,
-      name: "Priya Sharma",
+      name: "person 1",
       course: "JEE Main",
       rating: 5,
-      text: "EduMaster Academy transformed my approach to learning. The faculty is exceptional and the study material is comprehensive.",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b332fafe?w=100&h=100&fit=crop&crop=face"
+      text: "Hosur Toppers Academy transformed my approach to learning. The faculty is exceptional and the study material is comprehensive.",
+      // image: "https://images.unsplash.com/photo-1494790108755-2616b332fafe?w=100&h=100&fit=crop&crop=face"
     },
     {
       id: 2,
-      name: "Rahul Kumar",
+      name: "person 2",
       course: "NEET",
       rating: 5,
-      text: "Thanks to EduMaster, I cleared NEET with flying colors. The doubt clearing sessions were incredibly helpful.",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+      text: "Thanks to Hosur Toppers Academy , I cleared NEET with flying colors. The doubt clearing sessions were incredibly helpful.",
+      // image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
     },
     {
       id: 3,
-      name: "Anjali Patel",
+      name: "person 3",
       course: "Foundation Math",
       rating: 5,
       text: "The foundation course built my confidence in mathematics. Now I solve complex problems with ease.",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
+      // image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
     }
   ],
   
   toppers: [
     {
       id: 1,
-      name: "Arjun Mehta",
+      name: "person 1",
       exam: "JEE Main 2024",
       rank: "AIR 42",
       score: "99.8 percentile",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      testimonial: "EduMaster's structured approach and excellent faculty helped me achieve my dream rank.",
+      // image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
+      testimonial: "Hosur Toppers Academy's structured approach and excellent faculty helped me achieve my dream rank.",
       course: "JEE Main & Advanced"
     },
     {
       id: 2,
-      name: "Sneha Gupta",
+      name: "person 2",
       exam: "NEET 2024",
       rank: "AIR 158",
       score: "680/720",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b332fafe?w=200&h=200&fit=crop&crop=face",
+      // image: "https://images.unsplash.com/photo-1494790108755-2616b332fafe?w=200&h=200&fit=crop&crop=face",
       testimonial: "The comprehensive study material and mock tests were instrumental in my success.",
       course: "NEET Preparation"
     },
     {
       id: 3,
-      name: "Vikram Singh",
+      name: "person 3",
       exam: "CBSE Board 2024",
       rank: "State Topper",
       score: "98.2%",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-      testimonial: "EduMaster's board exam preparation strategy is unmatched. Highly recommended!",
+      // image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+      testimonial: "Hosur Toppers Academy's board exam preparation strategy is unmatched. Highly recommended!",
       course: "Board Exam Preparation"
     },
     {
       id: 4,
-      name: "Kavya Reddy",
+      name: "person 4",
       exam: "JEE Advanced 2024",
       rank: "AIR 289",
       score: "95.4 percentile",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+      // image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
       testimonial: "The faculty's dedication and personalized attention made all the difference.",
       course: "JEE Main & Advanced"
     }
@@ -153,7 +153,7 @@ export const mockData = {
       id: 1,
       title: "Interactive Classroom Session",
       category: "classroom",
-      image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=400&h=300&fit=crop",
+      // image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=400&h=300&fit=crop",
       description: "Students actively participating in a physics demonstration"
     },
     {
@@ -231,7 +231,7 @@ export const mockData = {
         description: "Regular evaluation and feedback to track progress and identify areas for improvement."
       },
       {
-        title: "Holistic Development",
+        title: "STEM Based Teaching ",
         description: "Focus on academic excellence along with personality development and life skills."
       }
     ]

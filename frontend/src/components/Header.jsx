@@ -61,7 +61,7 @@ const Header = () => {
               </button>
               <Link to="/" className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">E</span>
+                  <span className="text-white font-bold text-lg">H</span>
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-[#002357]">{mockData.institute.name}</h1>
@@ -102,7 +102,7 @@ const Header = () => {
               <div className="flex items-center justify-between mb-8">
                 <Link to="/" className="flex items-center space-x-3" onClick={() => setIsMenuOpen(false)}>
                   <div className="w-10 h-10 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">E</span>
+                    <span className="text-white font-bold text-lg">H</span>
                   </div>
                   <div>
                     <h1 className="text-lg font-bold text-[#002357]">{mockData.institute.name}</h1>

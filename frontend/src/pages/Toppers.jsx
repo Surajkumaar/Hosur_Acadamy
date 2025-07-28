@@ -342,14 +342,14 @@ const Toppers = () => {
               Start Your Journey
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button 
+            {/* <Button 
               size="lg" 
               variant="outline" 
               className="border-white text-white hover:bg-white hover:text-[#0052CC] px-8 py-4 text-lg font-semibold transition-all duration-300"
               onClick={() => window.location.href = '/courses'}
             >
               View Our Courses
-            </Button>
+            </Button> */}
           </div>
         </div>
       </section>

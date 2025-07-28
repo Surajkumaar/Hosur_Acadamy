@@ -15,14 +15,14 @@ const About = () => {
         <div className="relative container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
             <Badge className="bg-[#39C93D] text-white px-4 py-2 text-sm font-medium mb-6">
-              About EduMaster Academy
+              About Hosur Toppers Academy
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6">
               Empowering Minds,
               <span className="block text-[#39C93D]">Shaping Futures</span>
             </h1>
             <p className="text-xl text-gray-200 leading-relaxed">
-              For over 15 years, we've been dedicated to providing exceptional education that transforms lives
+              For over 23 years, we've been dedicated to providing exceptional education that transforms lives
               and opens doors to endless possibilities.
             </p>
           </div>
@@ -159,24 +159,24 @@ const About = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: "Dr. Rajesh Kumar",
+                name: "faculty 1",
                 subject: "Mathematics & JEE",
                 experience: "15+ years",
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+                // image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
                 qualifications: "Ph.D. Mathematics, IIT Delhi"
               },
               {
-                name: "Dr. Priya Sharma",
+                name: "faculty 2",
                 subject: "Physics & NEET",
                 experience: "12+ years",
-                image: "https://images.unsplash.com/photo-1494790108755-2616b332fafe?w=300&h=300&fit=crop&crop=face",
+                // image: "https://images.unsplash.com/photo-1494790108755-2616b332fafe?w=300&h=300&fit=crop&crop=face",
                 qualifications: "Ph.D. Physics, IISc Bangalore"
               },
               {
-                name: "Prof. Amit Patel",
+                name: "faculty 3",
                 subject: "Chemistry & Olympiad",
                 experience: "18+ years",
-                image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
+                // image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
                 qualifications: "M.Sc. Chemistry, IIT Bombay"
               }
             ].map((faculty, index) => (
@@ -213,7 +213,7 @@ const About = () => {
               Our Journey
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              The story of how EduMaster Academy is transforming education in India
+              The story of how Hosur Toppers Academy is transforming education in India
             </p>
           </div>
           
@@ -228,10 +228,10 @@ const About = () => {
                 <div className="relative flex items-center">
                   <div className="w-1/2 pr-8 text-right">
                     <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-[#0052CC]">
-                      <div className="text-2xl font-bold text-[#0052CC] mb-2">2009</div>
+                      <div className="text-2xl font-bold text-[#0052CC] mb-2">2002</div>
                       <h3 className="text-xl font-semibold text-[#002357] mb-3">Foundation</h3>
                       <p className="text-gray-600">
-                        EduMaster Academy was founded with a mission to democratize quality education and make it accessible to every student.
+                        Hosur Toppers Academy  was founded with a mission to democratize quality education and make it accessible to every student.
                       </p>
                     </div>
                   </div>

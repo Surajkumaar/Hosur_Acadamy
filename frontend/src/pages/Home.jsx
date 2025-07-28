@@ -40,7 +40,7 @@ const Home = () => {
     },
     foundation: {
       title: "Foundation Courses",
-      description: "Strong foundation building for grades 6-10 with conceptual learning approach",
+      description: "Strong foundation building for grades 9-12 with conceptual learning approach",
       image: "https://images.unsplash.com/photo-1635372722656-389f87a941b7?w=600&h=400&fit=crop",
       features: ["Conceptual Learning", "Problem Solving", "Regular Assessment", "Doubt Support"],
       successRate: "98%",
@@ -197,12 +197,13 @@ const Home = () => {
                       >
                         View Schedule
                       </Button>
-                      <Button 
+                       {/* <Button 
                         className="bg-[#39C93D] hover:bg-[#2db832] text-white"
                         onClick={() => window.location.href = '/inquiry?course=' + activeTab}
                       >
                         Book Free Demo
                       </Button>
+                       */}
                     </div>
                   </div>
                 </div>
@@ -262,7 +263,7 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[#002357] mb-4">
-              Why Choose EduMaster Academy?
+              Why Choose Hosur Toppers Academy?
             </h2>
           </div>
           
@@ -443,7 +444,7 @@ const Home = () => {
                 Ready to Begin Your Success Journey?
               </h2>
               <p className="text-lg mb-6 text-gray-100">
-                Join thousands of successful students who transformed their dreams into reality with EduMaster Academy.
+                Join thousands of successful students who transformed their dreams into reality with Hosur Toppers Academy.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
@@ -452,16 +453,16 @@ const Home = () => {
                   className="bg-white text-[#0052CC] hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
                 >
                   <GraduationCap className="mr-2 h-5 w-5" />
-                  Explore Courses
+                  Contact Us
                 </Button>
-                <Button 
+                {/* <Button 
                   size="lg"
                   onClick={() => window.location.href = '/inquiry?type=demo'}
                   className="bg-[#39C93D] hover:bg-[#2db832] text-white px-8 py-4 text-lg font-semibold"
                 >
                   <Play className="mr-2 h-5 w-5" />
                   Book Free Demo
-                </Button>
+                </Button> */}
               </div>
             </div>
             <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-6 border border-white border-opacity-20">
