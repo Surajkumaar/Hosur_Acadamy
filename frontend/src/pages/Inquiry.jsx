@@ -113,26 +113,19 @@ const Inquiry = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call with mock data
       const inquiryData = {
-        id: Date.now(),
         ...formData,
         timestamp: new Date().toISOString(),
         status: 'pending',
         source: 'website'
       };
       
-      // Store in localStorage for mock backend
-      const existingInquiries = JSON.parse(localStorage.getItem('inquiries') || '[]');
-      existingInquiries.push(inquiryData);
-      localStorage.setItem('inquiries', JSON.stringify(existingInquiries));
+      await submitInquiry(inquiryData);
       
       // Clean up preference storage
       localStorage.removeItem('enrollmentIntent');
       localStorage.removeItem('courseInterest');
       localStorage.removeItem('topperInterest');
-      
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate network delay
       
       setIsSubmitted(true);
       toast({

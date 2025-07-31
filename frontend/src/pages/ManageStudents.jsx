@@ -1,36 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Search, Plus, Edit2, Trash2, Download } from 'lucide-react';
 import StudentFormModal from '../components/StudentFormModal';
 import { useToast } from '../hooks/use-toast';
+import { getStudents, addStudent, updateStudent, deleteStudent } from '../lib/api';
 
 const ManageStudents = () => {
   const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [formMode, setFormMode] = useState('add');
-  const [students, setStudents] = useState([
-    {
-      id: 1,
-      name: 'Kavishri A N S',
-      rollNo: '9444423915',
-      course: 'Machine Learning / Deep Learning /AI',
-      batch: '2025',
-      email: 'kavishri@example.com',
-      phone: '9876543210'
-    },
-    // Add more mock data as needed
-  ]);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCourse, setSelectedCourse] = useState('All');
-
-  const courses = ['All', 'JEE', 'NEET', 'Board Exams', 'Foundation', 'Machine Learning / Deep Learning /AI'];
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const data = await getStudents();
+        setStudents(data);
+      } catch (err) {
+        setError(err.message);
+        toast({
+          title: "Error",
+          description: "Failed to fetch students.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudents();
+  }, []);
 
   const filteredStudents = students.filter(student => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.rollNo.includes(searchTerm) ||
+                         student.roll_no.includes(searchTerm) ||
                          student.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCourse = selectedCourse === 'All' || student.course === selectedCourse;
     return matchesSearch && matchesCourse;
@@ -43,7 +49,7 @@ const ManageStudents = () => {
       headers.join(','), // Header row
       ...students.map(student => [
         student.name,
-        student.rollNo,
+        student.roll_no,
         student.course,
         student.batch,
         student.email,
@@ -83,8 +89,8 @@ const ManageStudents = () => {
 
     // Filter existing roll numbers for the same course and year
     const existingRollNumbers = students
-      .filter(s => s.rollNo.startsWith(`${year}${courseCode}`))
-      .map(s => parseInt(s.rollNo.slice(-4)));
+      .filter(s => s.roll_no.startsWith(`${year}${courseCode}`)) // Changed to roll_no
+      .map(s => parseInt(s.roll_no.slice(-4))); // Changed to roll_no
 
     // Find the next available number
     let sequentialNumber = 1;
@@ -108,30 +114,63 @@ const ManageStudents = () => {
     setIsFormOpen(true);
   };
 
-  const handleFormSubmit = (formData) => {
-    if (formMode === 'add') {
-      const rollNo = generateRollNumber(formData.course);
-      const newStudent = {
-        id: Date.now(), // temporary ID generation
-        ...formData,
-        rollNo
-      };
-      setStudents([...students, newStudent]);
+  const handleFormSubmit = async (formData) => {
+    try {
+      if (formMode === 'add') {
+        const roll_no = generateRollNumber(formData.course);
+        const newStudent = { ...formData, roll_no };
+        const addedStudent = await addStudent(newStudent);
+        setStudents(prevStudents => [...prevStudents, addedStudent]);
+        toast({
+          title: "Success",
+          description: "Student added successfully",
+        });
+      } else {
+        const updatedStudent = await updateStudent(selectedStudent.id, formData);
+        setStudents(prevStudents => prevStudents.map(student => 
+          student.id === selectedStudent.id ? updatedStudent : student
+        ));
+        toast({
+          title: "Success",
+          description: "Student details updated successfully",
+        });
+      }
+      setIsFormOpen(false);
+    } catch (err) {
       toast({
-        title: "Success",
-        description: "Student added successfully",
-      });
-    } else {
-      setStudents(students.map(student => 
-        student.id === selectedStudent.id ? { ...student, ...formData } : student
-      ));
-      toast({
-        title: "Success",
-        description: "Student details updated successfully",
+        title: "Error",
+        description: `Failed to ${formMode === 'add' ? 'add' : 'update'} student: ${err.message}`,
+        variant: "destructive"
       });
     }
-    setIsFormOpen(false);
   };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this student?')) {
+      try {
+        await deleteStudent(id);
+        setStudents(prevStudents => prevStudents.filter(student => student.id !== id));
+        toast({
+          title: "Success",
+          description: "Student deleted successfully",
+        });
+      } catch (err) {
+        toast({
+          title: "Error",
+          description: `Failed to delete student: ${err.message}`,
+          variant: "destructive"
+        });
+      }
+    }
+  };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading students...</div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
@@ -222,7 +261,7 @@ const ManageStudents = () => {
                       <div className="font-medium text-gray-900">{student.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.rollNo}
+                      {student.roll_no}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {student.course}
@@ -246,6 +285,7 @@ const ManageStudents = () => {
                         <button
                           className="text-red-600 hover:text-red-800"
                           title="Delete"
+                          onClick={() => handleDelete(student.id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

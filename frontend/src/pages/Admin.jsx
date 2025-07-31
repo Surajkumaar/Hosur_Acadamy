@@ -1,32 +1,126 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
+import { LogOut, User } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../hooks/use-toast';
+import { showNotification } from '../lib/firebase';
 
 const Admin = () => {
-  const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
+  const { currentUser, userProfile, loading, logout } = useAuth();
+  const hasRunEffect = useRef(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const result = await logout();
+      if (result.success) {
+        console.log("✅ Logout successful");
+        
+        showNotification(toast, {
+          title: "Logout Successful",
+          description: "You have been successfully logged out.",
+          type: "default"
+        });
+        
+        // Navigate after a brief delay to show the toast
+        setTimeout(() => {
+          navigate('/login');
+        }, 1000);
+      } else {
+        console.error("❌ Logout failed:", result.error);
+        
+        showNotification(toast, {
+          title: "Logout Failed",
+          description: result.error || "An error occurred while logging out.",
+          type: "error"
+        });
+      }
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+      
+      showNotification(toast, {
+        title: "Logout Error",
+        description: "An unexpected error occurred while logging out.",
+        type: "error"
+      });
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   useEffect(() => {
-    // Check if user is logged in and has admin rights
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    const userRole = localStorage.getItem('userRole');
+    // Prevent multiple executions
+    if (hasRunEffect.current) return;
     
-    if (!isLoggedIn || userRole !== 'admin') {
-      navigate('/login');
-    } else {
-      setIsAuthorized(true);
+    console.log("🔍 Admin component - checking access");
+    console.log("  Loading:", loading);
+    console.log("  Current user:", currentUser?.email || 'none');
+    console.log("  User profile:", userProfile);
+    console.log("  User role:", userProfile?.role || 'none');
+    
+    if (!loading) {
+      hasRunEffect.current = true;
+      
+      if (!currentUser) {
+        console.log("❌ No user, redirecting to login");
+        navigate('/login');
+      } else if (userProfile && userProfile.role !== 'admin') {
+        console.log("❌ User is not admin, redirecting to home");
+        navigate('/'); // Redirect non-admin users to home
+      } else if (!userProfile) {
+        console.log("❌ No user profile found, redirecting to login");
+        navigate('/login');
+      } else {
+        console.log("✅ Admin access granted");
+      }
     }
-  }, [navigate]);
+  }, [currentUser, userProfile, loading, navigate]);
 
-  if (!isAuthorized) {
-    return null; // or a loading spinner
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#0052CC]"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentUser || !userProfile || userProfile.role !== 'admin') {
+    return null; // Should be redirected by useEffect
   }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
+          {/* Header with User Info and Logout */}
+          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              <p className="text-sm text-gray-600 mt-1">Welcome back, {currentUser?.email}</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 text-gray-600">
+                <User className="h-5 w-5" />
+                <span className="text-sm font-medium">{userProfile?.role || 'Admin'}</span>
+              </div>
+              <Button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                variant="outline"
+                className="flex items-center space-x-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
+              </Button>
+            </div>
+          </div>
           
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

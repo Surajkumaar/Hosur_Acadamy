@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { showNotification } from '../lib/firebase';
+import { useToast } from '../hooks/use-toast';
+
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +14,9 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,41 +26,127 @@ const Login = () => {
     }));
   };
 
-  const { login } = useAuth();
+  const { login, currentUser, userProfile, isFirebaseReady, authError } = useAuth();
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (currentUser && userProfile) {
+      // Redirect based on user role
+      if (userProfile.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    }
+    
+    // Show Firebase authentication service error if it exists
+    if (authError && !isFirebaseReady) {
+      setError('Authentication service unavailable. Please try again later or contact support.');
+    }
+  }, [currentUser, userProfile, navigate, authError, isFirebaseReady]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.email && formData.password) {
-      // Mock authentication - replace with actual API call
-      try {
-        // Mock student credentials check
-        if (formData.email.includes('student')) {
-          // Example: student.2025jee0001@hosur.edu
-          const rollNumber = formData.email.split('.')[1].split('@')[0].toUpperCase();
-          login({
-            email: formData.email,
-            role: 'student',
-            rollNumber: rollNumber
-          });
-          navigate('/results');
-        } else if (formData.email.includes('admin')) {
-          login({
-            email: formData.email,
-            role: 'admin'
-          });
-          navigate('/admin');
-        } else {
-          login({
-            email: formData.email,
-            role: 'user'
-          });
-          navigate('/');
+    setError('');
+    setIsLoading(true);
+    
+    console.log("Login form submitted:", formData.email);
+    
+    // Check if Firebase is ready before attempting login
+    if (!isFirebaseReady) {
+      setError('Authentication service unavailable. Please try again later or contact support.');
+      setIsLoading(false);
+      return;
+    }
+    
+    try {
+      const result = await login(formData.email, formData.password);
+      console.log("Login result:", result);
+      
+      if (result.success) {
+        console.log("✅ Login successful, user:", result.user);
+        
+        showNotification(toast, {
+          title: "Login Successful",
+          description: "Welcome back to Hosur Academy!",
+          type: "default"
+        });
+        
+        // Wait a moment for the auth context to update with user profile
+        setTimeout(async () => {
+          try {
+            const { getUserProfile, createUserProfile } = await import('../lib/user-profile');
+            let profile = await getUserProfile(result.user.uid);
+            
+            // If no profile exists, create one with default role
+            if (!profile) {
+              console.log("🔧 No user profile found, creating one...");
+              
+              // Determine role based on email (simple admin detection)
+              const isAdmin = formData.email.toLowerCase().includes('admin') || 
+                             formData.email.toLowerCase() === 'admin@hosuracademy.com' ||
+                             formData.email.toLowerCase() === 'hosurtoppersacademy@gmail.com';
+              
+              profile = await createUserProfile(result.user, {
+                displayName: result.user.displayName || result.user.email,
+                role: isAdmin ? 'admin' : 'student'
+              });
+              
+              console.log("✅ Created user profile:", profile);
+            }
+            
+            console.log("👤 User profile:", profile);
+            
+            // Redirect based on role
+            if (profile && profile.role === 'admin') {
+              console.log("🔑 Redirecting to admin dashboard");
+              navigate('/admin');
+            } else {
+              console.log("🏠 Redirecting to home (role:", profile?.role || 'none', ")");
+              navigate('/');
+            }
+          } catch (error) {
+            console.error("❌ Error with user profile:", error);
+            
+            // If Firestore is not set up, skip profile check and redirect based on email
+            if (error.message.includes('Firestore') || error.message.includes('database')) {
+              console.log("⚠️ Firestore not set up, using email-based admin detection");
+              if (formData.email.toLowerCase().includes('admin') || 
+                  formData.email.toLowerCase() === 'admin@hosuracademy.com' ||
+                  formData.email.toLowerCase() === 'hosurtoppersacademy@gmail.com') {
+                console.log("🔑 Email suggests admin, redirecting to admin dashboard");
+                navigate('/admin');
+              } else {
+                console.log("🏠 Redirecting to home (fallback)");
+                navigate('/');
+              }
+            } else {
+              console.log("🏠 Redirecting to home (fallback)");
+              navigate('/'); // Default redirect
+            }
+          }
+        }, 500);
+      } else {
+        // Display different messages based on error code
+        let errorMessage = result.error || 'Failed to sign in';
+        
+        if (result.errorCode === 'auth/user-not-found') {
+          errorMessage = 'No account found with this email. Please register first.';
+        } else if (result.errorCode === 'auth/wrong-password') {
+          errorMessage = 'Incorrect password. Please try again.';
+        } else if (result.errorCode === 'auth/invalid-email') {
+          errorMessage = 'Invalid email address format.';
+        } else if (result.errorCode === 'auth/configuration-not-found' || result.errorCode === 'auth/service-unavailable') {
+          errorMessage = 'Authentication service unavailable. Please try again later or contact support.';
         }
-      } catch (err) {
-        setError('Invalid credentials');
+        
+        setError(errorMessage);
       }
-    } else {
-      setError('Please fill in all fields');
+    } catch (err) {
+      console.error("Login component error:", err);
+      setError('Authentication service unavailable. Please try again later or contact support.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -64,7 +155,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex mt-16"> {/* Added mt-16 for top margin to clear header */}
       {/* Left Section with Image and Text */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#13ad89] text-white p-12 flex-col justify-center">
         <div className="max-w-md mx-auto">
@@ -87,8 +178,9 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="text-red-500 text-center text-sm">
-                {error}
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center text-sm">
+                <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
+                <span>{error}</span>
               </div>
             )}
 
@@ -159,10 +251,32 @@ const Login = () => {
             <Button
               type="submit"
               className="w-full bg-[#13ad89] hover:bg-[#0f8c6d] text-white py-3 rounded-lg transition-colors"
+              disabled={isLoading}
             >
-              Sign In
+              {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Don't have an account?</span>
+              </div>
+            </div>
+            
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={() => navigate('/register')}
+                className="w-full flex justify-center py-3 px-4 border border-[#13ad89] rounded-lg shadow-sm text-sm font-medium text-[#13ad89] hover:bg-[#f0fcf9] focus:outline-none"
+              >
+                Create an account
+              </button>
+            </div>
+          </div>
 
           <p className="mt-8 text-center text-sm text-gray-500">
             © 2025 Hosur Academy. All rights reserved.

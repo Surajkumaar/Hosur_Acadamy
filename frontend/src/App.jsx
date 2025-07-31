@@ -12,20 +12,21 @@ import Gallery from "./pages/Gallery";
 import Toppers from "./pages/Toppers";
 import Inquiry from "./pages/Inquiry";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Admin from "./pages/Admin";
+import FirebaseTest from "./pages/FirebaseTest";
 import PublishResults from "./pages/PublishResults";
 import ManageStudents from "./pages/ManageStudents";
 import StudentDashboard from "./pages/StudentDashboard";
-import Toaster from "./components/ui/toaster";
+import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
   return (
-    <React.StrictMode>
-      <div className="App">
-        <AuthProvider>
-          <BrowserRouter>
-            <Header />
-            <main className="pt-20">
+    <div className="App">
+      <AuthProvider>
+        <BrowserRouter>
+          <Header />
+          <main className="pt-20">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
@@ -34,6 +35,8 @@ const App = () => {
                 <Route path="/toppers" element={<Toppers />} />
                 <Route path="/inquiry" element={<Inquiry />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/firebase-test" element={<FirebaseTest />} />
                 <Route 
                   path="/admin" 
                   element={
@@ -73,7 +76,6 @@ const App = () => {
           </BrowserRouter>
         </AuthProvider>
       </div>
-    </React.StrictMode>
   );
 }
 

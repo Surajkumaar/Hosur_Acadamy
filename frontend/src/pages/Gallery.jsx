@@ -10,6 +10,8 @@ const Gallery = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const gallery = mockData.gallery;
 
@@ -72,6 +74,14 @@ const Gallery = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading gallery...</div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">

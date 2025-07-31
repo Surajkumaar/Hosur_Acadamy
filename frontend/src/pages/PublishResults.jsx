@@ -107,14 +107,26 @@ const PublishResults = () => {
 
   const [showPreview, setShowPreview] = useState(false);
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (results.length === 0) {
       alert('Please upload results before publishing');
       return;
     }
-    // Here you would typically send the data to your backend
-    alert('Results published successfully!');
-    navigate('/admin');
+    try {
+      const fullResultData = {
+        exam_name: examDetails.examName,
+        exam_date: examDetails.examDate,
+        course: examDetails.course,
+        batch: examDetails.batch,
+        results: results,
+      };
+      await apiPublishResults(fullResultData);
+      alert('Results published successfully!');
+      navigate('/admin');
+    } catch (error) {
+      alert(`Failed to publish results: ${error.message}`);
+      console.error('Publish results error:', error);
+    }
   };
 
   return (

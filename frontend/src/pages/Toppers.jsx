@@ -11,6 +11,27 @@ const Toppers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedExam, setSelectedExam] = useState('all');
   const [selectedYear, setSelectedYear] = useState('all');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const toppers = mockData.toppers;
+
+  const exams = useMemo(() => [...new Set(toppers.map(topper => topper.exam))], [toppers]);
+  const years = useMemo(() => [...new Set(toppers.map(topper => topper.year))], [toppers]);
+
+  const filteredToppers = useMemo(() => {
+    let filtered = toppers.filter(topper => {
+      const matchesSearch = topper.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            topper.exam.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            topper.course.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesExam = selectedExam === 'all' || topper.exam === selectedExam;
+      const matchesYear = selectedYear === 'all' || topper.year === selectedYear;
+      
+      return matchesSearch && matchesExam && matchesYear;
+    });
+
+    return filtered;
+  }, [searchTerm, selectedExam, selectedYear, toppers]);
 
   useEffect(() => {
     if (window.location.hash === '#top-achievers') {
@@ -21,49 +42,26 @@ const Toppers = () => {
     }
   }, []);
 
-  const toppers = mockData.toppers;
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading toppers...</div>;
+  }
 
-  // Get unique exams and years for filters
-  const exams = [...new Set(toppers.map(topper => topper.exam))];
-  const years = [...new Set(toppers.map(topper => topper.exam.split(' ').pop()))];
-
-  // Filter toppers
-  const filteredToppers = useMemo(() => {
-    return toppers.filter(topper => {
-      const matchesSearch = topper.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          topper.exam.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesExam = selectedExam === 'all' || topper.exam.includes(selectedExam);
-      const matchesYear = selectedYear === 'all' || topper.exam.includes(selectedYear);
-      
-      return matchesSearch && matchesExam && matchesYear;
-    });
-  }, [searchTerm, selectedExam, selectedYear, toppers]);
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>;
+  }
 
   const getRankIcon = (rank) => {
-    const rankNumber = parseInt(rank.replace(/[^0-9]/g, ''));
-    if (rankNumber <= 10) return <Trophy className="h-5 w-5 text-yellow-500" />;
-    if (rankNumber <= 50) return <Medal className="h-5 w-5 text-gray-400" />;
-    if (rankNumber <= 100) return <Award className="h-5 w-5 text-orange-500" />;
-    return <Target className="h-5 w-5 text-blue-500" />;
+    if (rank === 1) return <Trophy className="h-5 w-5 text-white" />;
+    if (rank === 2) return <Medal className="h-5 w-5 text-white" />;
+    if (rank === 3) return <Award className="h-5 w-5 text-white" />;
+    return null;
   };
 
   const getRankColor = (rank) => {
-    const rankNumber = parseInt(rank.replace(/[^0-9]/g, ''));
-    if (rankNumber <= 10) return 'bg-yellow-100 text-yellow-800';
-    if (rankNumber <= 50) return 'bg-gray-100 text-gray-800';
-    if (rankNumber <= 100) return 'bg-orange-100 text-orange-800';
-    return 'bg-blue-100 text-blue-800';
-  };
-
-  const handleInquireClick = (topper) => {
-    // Save topper interest to localStorage for backend integration
-    localStorage.setItem('topperInterest', JSON.stringify({
-      topperName: topper.name,
-      course: topper.course,
-      exam: topper.exam,
-      timestamp: new Date().toISOString()
-    }));
-    window.location.href = '/inquiry';
+    if (rank === 1) return 'bg-yellow-500';
+    if (rank === 2) return 'bg-gray-400';
+    if (rank === 3) return 'bg-orange-500';
+    return 'bg-gray-200';
   };
 
   return (

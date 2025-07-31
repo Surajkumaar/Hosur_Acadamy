@@ -12,6 +12,8 @@ const Courses = () => {
   const [selectedGrade, setSelectedGrade] = useState('all');
   const [selectedSubject, setSelectedSubject] = useState('all');
   const [sortBy, setSortBy] = useState('title');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const courses = mockData.courses;
 
@@ -56,6 +58,14 @@ const Courses = () => {
     }));
     window.location.href = '/inquiry';
   };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading courses...</div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">

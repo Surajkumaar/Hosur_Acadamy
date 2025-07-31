@@ -11,6 +11,19 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* Ensure main content doesn't get hidden behind fixed header */
+.main-content {
+    padding-top: 80px; /* Adjust based on your header height */
+    min-height: calc(100vh - 80px);
+}
+
+/* Specific styling for login container */
+.login-container {
+    padding-top: 0;
+    margin-top: -80px; /* Offset the main-content padding */
+    min-height: 100vh;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
         monospace;
