@@ -1,0 +1,29 @@
+# Dependencies
+/frontend/node_modules/
+/backend/venv/
+
+# Build artifacts
+/frontend/build/
+/frontend/dist/
+*.pyc
+__pycache__/
+
+# Log files
+npm-debug.log*
+yarn-error.log*
+yarn.lock
+
+# Cache
+.cache/
+
+# Env files
+# Env files
+.env
+.env.local
+.env.*.local
+/frontend/.env
+
+
+# IDE settings
+.vscode/
+.idea/
