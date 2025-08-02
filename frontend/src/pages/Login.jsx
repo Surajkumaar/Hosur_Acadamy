@@ -61,10 +61,10 @@ const Login = () => {
     
     try {
       const result = await login(formData.email, formData.password);
-      console.log("Login result:", result);
+      console.log("Firebase login result:", result);
       
       if (result.success) {
-        console.log("✅ Login successful, user:", result.user);
+        console.log("✅ Firebase Login successful, user:", result.user);
         
         showNotification(toast, {
           title: "Login Successful",
@@ -102,8 +102,8 @@ const Login = () => {
               console.log("🔑 Redirecting to admin dashboard");
               navigate('/admin');
             } else {
-              console.log("🏠 Redirecting to home (role:", profile?.role || 'none', ")");
-              navigate('/');
+              console.log("🏠 Redirecting to student dashboard");
+              navigate('/student-dashboard');
             }
           } catch (error) {
             console.error("❌ Error with user profile:", error);
@@ -117,12 +117,12 @@ const Login = () => {
                 console.log("🔑 Email suggests admin, redirecting to admin dashboard");
                 navigate('/admin');
               } else {
-                console.log("🏠 Redirecting to home (fallback)");
-                navigate('/');
+                console.log("🏠 Redirecting to student dashboard (fallback)");
+                navigate('/student-dashboard');
               }
             } else {
-              console.log("🏠 Redirecting to home (fallback)");
-              navigate('/'); // Default redirect
+              console.log("🏠 Redirecting to student dashboard (fallback)");
+              navigate('/student-dashboard'); // Default redirect for students
             }
           }
         }, 500);
@@ -227,6 +227,12 @@ const Login = () => {
                   )}
                 </button>
               </div>
+              <p className="text-xs text-gray-500 mt-1">
+                <strong>Students:</strong> Use your date of birth as password (format: YYYY-MM-DD, e.g., 2000-01-15)
+              </p>
+              <p className="text-xs text-gray-500">
+                <strong>Admin:</strong> Use your admin password
+              </p>
             </div>
 
             <div className="flex items-center justify-between">
@@ -256,27 +262,6 @@ const Login = () => {
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Don't have an account?</span>
-              </div>
-            </div>
-            
-            <div className="mt-6">
-              <button
-                type="button"
-                onClick={() => navigate('/register')}
-                className="w-full flex justify-center py-3 px-4 border border-[#13ad89] rounded-lg shadow-sm text-sm font-medium text-[#13ad89] hover:bg-[#f0fcf9] focus:outline-none"
-              >
-                Create an account
-              </button>
-            </div>
-          </div>
 
           <p className="mt-8 text-center text-sm text-gray-500">
             © 2025 Hosur Academy. All rights reserved.

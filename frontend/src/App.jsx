@@ -15,9 +15,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import FirebaseTest from "./pages/FirebaseTest";
+import FirebaseSetup from "./pages/FirebaseSetup";
+import FirebaseDebug from "./pages/FirebaseDebug";
 import PublishResults from "./pages/PublishResults";
 import ManageStudents from "./pages/ManageStudents";
 import StudentDashboard from "./pages/StudentDashboard";
+import TestStudentLogin from "./pages/TestStudentLogin";
 import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
@@ -35,13 +38,23 @@ const App = () => {
                 <Route path="/toppers" element={<Toppers />} />
                 <Route path="/inquiry" element={<Inquiry />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
                 <Route path="/firebase-test" element={<FirebaseTest />} />
+                <Route path="/firebase-setup" element={<FirebaseSetup />} />
+                <Route path="/firebase-debug" element={<FirebaseDebug />} />
+                <Route path="/test-student-login" element={<TestStudentLogin />} />
                 <Route 
                   path="/admin" 
                   element={
                     <RequireAuth allowedRoles={['admin']}>
                       <Admin />
+                    </RequireAuth>
+                  } 
+                />
+                 <Route 
+                  path="/admin/create-student" 
+                  element={
+                    <RequireAuth allowedRoles={['admin']}>
+                      <Register />
                     </RequireAuth>
                   } 
                 />
@@ -63,6 +76,14 @@ const App = () => {
                 />
                 <Route 
                   path="/results" 
+                  element={
+                    <RequireAuth allowedRoles={['student', 'admin']}>
+                      <StudentDashboard />
+                    </RequireAuth>
+                  } 
+                />
+                <Route 
+                  path="/student-dashboard" 
                   element={
                     <RequireAuth allowedRoles={['student', 'admin']}>
                       <StudentDashboard />

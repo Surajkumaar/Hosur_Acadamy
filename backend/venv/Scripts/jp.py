@@ -1,4 +1,4 @@
-#!C:\Users\91735\Downloads\Hosur-acadamy-main\Hosur-acadamy-main\backend\venv\Scripts\python.exe
+#!C:\Users\91735\Downloads\Hosur-acadamy-main\Hosur\Hosur_Acadamy\backend\venv\Scripts\python.exe
 
 import sys
 import json

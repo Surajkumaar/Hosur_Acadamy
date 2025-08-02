@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown, X, Phone, MessageCircle, LogIn } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ChevronDown, X, Phone, MessageCircle, LogIn, LogOut, User } from 'lucide-react';
 import { Button } from './ui/button';
 import { mockData } from './mock/mockData';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { currentUser, userProfile, logout } = useAuth();
+
+  // Use Firebase authentication only
+  const isAuthenticated = currentUser;
+  const userRole = userProfile?.role;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,8 +32,21 @@ const Header = () => {
     { name: 'Toppers', path: '/toppers' },
     { name: 'Results', path: '/results' },
     { name: 'Inquiry', path: '/inquiry' },
-    { name: 'Login', path: '/login' },
+    // Add conditional navigation items based on authentication
+    ...(isAuthenticated ? [] : [{ name: 'Login', path: '/login' }]),
+    ...(userRole === 'admin' ? [{ name: 'Admin', path: '/admin' }] : []),
+    ...(userRole === 'student' ? [{ name: 'Dashboard', path: '/student-dashboard' }] : []),
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   const handleCall = () => {
     window.open(`tel:${mockData.institute.phone}`, '_self');
@@ -140,15 +160,31 @@ const Header = () => {
               >
                 Enroll Now
               </Button>
-              <Link to="/login">
-                <Button 
-                  variant="outline"
-                  className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-colors"
-                >
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Login
-                </Button>
-              </Link>
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-gray-600">
+                    {userProfile?.email || currentUser?.email || 'User'}
+                  </span>
+                  <Button 
+                    onClick={handleLogout}
+                    variant="outline"
+                    className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/login">
+                  <Button 
+                    variant="outline"
+                    className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-colors"
+                  >
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Login
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

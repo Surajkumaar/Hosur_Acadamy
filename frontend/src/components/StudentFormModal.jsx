@@ -12,6 +12,7 @@ const StudentFormModal = ({ isOpen, onClose, onSubmit, initialData, mode = 'add'
     batch: new Date().getFullYear().toString(),
     email: '',
     phone: '',
+    date_of_birth: '',
     ...initialData
   });
 
@@ -119,6 +120,19 @@ const StudentFormModal = ({ isOpen, onClose, onSubmit, initialData, mode = 'add'
                 placeholder="Enter phone number"
                 required
               />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="date_of_birth">Date of Birth</Label>
+              <Input
+                id="date_of_birth"
+                name="date_of_birth"
+                type="date"
+                value={formData.date_of_birth}
+                onChange={handleChange}
+                required
+              />
+              <p className="text-xs text-gray-500">This will be used as the student's password for login</p>
             </div>
           </div>
 

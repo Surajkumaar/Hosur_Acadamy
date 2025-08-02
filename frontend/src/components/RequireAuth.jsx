@@ -17,6 +17,7 @@ const RequireAuth = ({ children, allowedRoles }) => {
     );
   }
 
+  // Check Firebase authentication only
   if (!currentUser) {
     // Not logged in, redirect to login page
     return <Navigate to="/login" replace />;
@@ -27,7 +28,7 @@ const RequireAuth = ({ children, allowedRoles }) => {
     if (userProfile?.role === 'admin') {
       return <Navigate to="/admin" replace />;
     } else {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/student-dashboard" replace />;
     }
   }
 

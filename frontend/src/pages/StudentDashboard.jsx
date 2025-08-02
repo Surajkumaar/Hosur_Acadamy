@@ -96,7 +96,7 @@ const StudentDashboard = () => {
   };
 
   useEffect(() => {
-    // If logged in as student, automatically load their results
+    // If logged in as student via Firebase, automatically load their results
     if (user?.role === 'student' && user?.rollNumber) {
       setRollNumber(user.rollNumber);
       handleSearch();
