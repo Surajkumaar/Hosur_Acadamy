@@ -8,6 +8,7 @@ import {
 } from '../lib/firebase';
 import { getUserProfile } from '../lib/user-profile';
 import { login as apiLogin, getUser as apiGetUser } from '../lib/api';
+import sessionManager from '../lib/session-manager';
 
 const UnifiedAuthContext = createContext(null);
 
@@ -20,10 +21,26 @@ export const UnifiedAuthProvider = ({ children }) => {
   const [authType, setAuthType] = useState(null); // 'firebase' or 'api'
 
   useEffect(() => {
+    // Check for page refresh scenario first
+    if (sessionManager.isPageRefresh()) {
+      console.log('🔄 Unified Auth: Page refresh detected - forcing logout');
+      sessionManager.forceLogoutOnRefresh();
+      setLoading(false);
+      return;
+    }
+
     // Check for existing API token first
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token && sessionManager.isSessionActive()) {
       handleApiTokenAuth(token);
+      return;
+    }
+
+    // If token exists but no active session, it's a page refresh
+    if (token && !sessionManager.isSessionActive()) {
+      console.log('🔄 API token exists but no active session - forcing logout');
+      sessionManager.forceLogoutOnRefresh();
+      setLoading(false);
       return;
     }
 
@@ -35,13 +52,36 @@ export const UnifiedAuthProvider = ({ children }) => {
     }
 
     setIsFirebaseReady(true);
+    
+    // Listen to session manager events
+    const unsubscribeSession = sessionManager.addEventListener((event, data) => {
+      if (event === 'forced_logout') {
+        console.log('🔄 Unified Auth: Session manager forced logout - clearing auth state');
+        setCurrentUser(null);
+        setUserProfile(null);
+        setAuthType(null);
+        setAuthError('Session ended due to page refresh');
+      }
+    });
+
     const unsubscribe = onAuthStateChanged(auth, 
       async (user) => {
-        console.log("🔄 Firebase auth state changed, user:", user?.email || 'none');
+        console.log("🔄 Unified Auth: Firebase auth state changed, user:", user?.email || 'none');
+        
+        // If user exists but session manager detected a refresh, force logout
+        if (user && sessionManager.isPageRefresh()) {
+          console.log('🔄 User exists but page was refreshed - forcing logout');
+          await sessionManager.forceLogoutOnRefresh();
+          return;
+        }
+        
         setCurrentUser(user);
         setAuthType(user ? 'firebase' : null);
         
         if (user) {
+          // Initialize session in session manager
+          sessionManager.initSession(user, 'firebase');
+          
           // Get user profile with role information
           try {
             console.log("📋 Fetching Firebase user profile for:", user.uid);
@@ -75,8 +115,9 @@ export const UnifiedAuthProvider = ({ children }) => {
             }
           }
         } else {
-          console.log("👤 No Firebase user, clearing profile");
+          console.log("👤 No Firebase user, clearing profile and session");
           setUserProfile(null);
+          sessionManager.clearSession();
         }
         
         setLoading(false);
@@ -89,7 +130,10 @@ export const UnifiedAuthProvider = ({ children }) => {
       }
     );
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      unsubscribeSession();
+    };
   }, []);
 
   const handleApiTokenAuth = async (token) => {
@@ -99,11 +143,17 @@ export const UnifiedAuthProvider = ({ children }) => {
       
       if (userData) {
         console.log("✅ API authentication successful:", userData);
-        setAuthType('api');
-        setCurrentUser({
+        
+        // Initialize session for API auth
+        const apiUser = {
           email: userData.email,
-          uid: userData.email, // Use email as UID for API auth
-        });
+          uid: userData.email,
+        };
+        
+        sessionManager.initSession(apiUser, 'api');
+        
+        setAuthType('api');
+        setCurrentUser(apiUser);
         setUserProfile({
           email: userData.email,
           role: userData.role,
@@ -136,11 +186,16 @@ export const UnifiedAuthProvider = ({ children }) => {
         // Get user data from API
         const userData = await apiGetUser();
         
-        setAuthType('api');
-        setCurrentUser({
+        // Initialize session for API auth
+        const apiUser = {
           email: userData.email,
           uid: userData.email,
-        });
+        };
+        
+        sessionManager.initSession(apiUser, 'api');
+        
+        setAuthType('api');
+        setCurrentUser(apiUser);
         setUserProfile({
           email: userData.email,
           role: userData.role,
@@ -205,6 +260,9 @@ export const UnifiedAuthProvider = ({ children }) => {
   // Unified logout function
   const logout = async () => {
     try {
+      // Clear session first
+      sessionManager.clearSession();
+      
       // Clear API token
       localStorage.removeItem('token');
       

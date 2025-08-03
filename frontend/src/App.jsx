@@ -5,6 +5,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import RequireAuth from "./components/RequireAuth";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import RefreshWarning from "./components/RefreshWarning";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Courses from "./pages/Courses";
@@ -21,6 +22,7 @@ import PublishResults from "./pages/PublishResults";
 import ManageStudents from "./pages/ManageStudents";
 import StudentDashboard from "./pages/StudentDashboard";
 import TestStudentLogin from "./pages/TestStudentLogin";
+import SessionTest from "./pages/SessionTest";
 import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
@@ -29,6 +31,7 @@ const App = () => {
       <AuthProvider>
         <BrowserRouter>
           <Header />
+          <RefreshWarning />
           <main className="pt-20">
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -42,6 +45,14 @@ const App = () => {
                 <Route path="/firebase-setup" element={<FirebaseSetup />} />
                 <Route path="/firebase-debug" element={<FirebaseDebug />} />
                 <Route path="/test-student-login" element={<TestStudentLogin />} />
+                <Route 
+                  path="/session-test" 
+                  element={
+                    <RequireAuth allowedRoles={['student', 'admin']}>
+                      <SessionTest />
+                    </RequireAuth>
+                  } 
+                />
                 <Route 
                   path="/admin" 
                   element={

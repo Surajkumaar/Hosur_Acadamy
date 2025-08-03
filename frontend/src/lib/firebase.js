@@ -8,7 +8,10 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  setPersistence,
+  browserSessionPersistence,
+  inMemoryPersistence
 } from "firebase/auth";
 import { 
   getFirestore,
@@ -114,6 +117,21 @@ let auth, db, storage, analytics;
 
 try {
   auth = getAuth(app);
+  
+  // Set auth persistence to session only (no local storage persistence)
+  // This will make auth state persist only for the current tab session
+  setPersistence(auth, inMemoryPersistence).then(() => {
+    console.log("✅ Firebase Auth persistence set to in-memory (no refresh persistence)");
+  }).catch((error) => {
+    console.warn("⚠️ Failed to set auth persistence:", error);
+    // Fallback: try session persistence
+    setPersistence(auth, browserSessionPersistence).then(() => {
+      console.log("✅ Firebase Auth persistence set to session (will clear on tab close)");
+    }).catch((fallbackError) => {
+      console.warn("⚠️ Failed to set session persistence:", fallbackError);
+    });
+  });
+  
   console.log("Firebase Auth initialized ✓");
 } catch (error) {
   console.error("Failed to initialize Firebase Auth:", error);
@@ -188,7 +206,10 @@ export {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  setPersistence,
+  browserSessionPersistence,
+  inMemoryPersistence
 };
 
 // Export Firestore functions
