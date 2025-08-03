@@ -60,8 +60,8 @@ export const getStudentDashboard = () => request('/students/me');
 export const getCourses = () => request('/courses');
 
 // Results
-export const publishResults = (resultData) => request('/results', { method: 'POST', body: JSON.stringify(resultData) });
 export const getResults = () => request('/results');
+// Note: publishResults now handled by Firebase in results-service.js
 
 // Inquiries
 export const submitInquiry = (inquiryData) => request('/inquiries', { method: 'POST', body: JSON.stringify(inquiryData) });

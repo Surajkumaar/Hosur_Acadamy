@@ -66,6 +66,14 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // Exam Results collection - New collection for published results
+    match /examResults/{examId} {
+      // All authenticated users can read exam results
+      // Only admins can create, update, or delete exam results
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Inquiries collection
     match /inquiries/{inquiryId} {
       // Anyone can submit an inquiry

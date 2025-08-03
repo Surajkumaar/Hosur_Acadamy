@@ -3,6 +3,7 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Search } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { getStudentResults, getAllResultsForRankings, getSimpleRankingsData, getSubjectToppers, calculateOverallToppers } from '../lib/results-service';
 import {
   Table,
   TableBody,
@@ -18,95 +19,279 @@ const StudentDashboard = () => {
   const [rollNumber, setRollNumber] = useState('');
   const [studentResults, setStudentResults] = useState(null);
   const [searchPerformed, setSearchPerformed] = useState(false);
-
-  // Mock data for testing - Replace with actual API call
-  const mockStudentData = {
-    '2025JEE0001': {
-      name: 'Kavishri A N S',
-      course: 'JEE',
-      batch: '2025',
-      classRankings: {
-        toppers: [
-          { name: 'Rahul M', rollNo: '2025JEE0003', totalMarks: 280, percentage: 93.33 },
-          { name: 'Kavishri A N S', rollNo: '2025JEE0001', totalMarks: 273, percentage: 91.00 },
-          { name: 'Priya S', rollNo: '2025JEE0015', totalMarks: 270, percentage: 90.00 }
-        ],
-        studentPosition: 2,
-        totalStudents: 120,
-        subjectToppers: {
-          Physics: [
-            { name: 'Rahul M', marks: 95 },
-            { name: 'Kavishri A N S', marks: 88 },
-            { name: 'Arun K', marks: 87 }
-          ],
-          Chemistry: [
-            { name: 'Kavishri A N S', marks: 92 },
-            { name: 'Priya S', marks: 90 },
-            { name: 'Rahul M', marks: 89 }
-          ],
-          Mathematics: [
-            { name: 'Priya S', marks: 96 },
-            { name: 'Rahul M', marks: 96 },
-            { name: 'Kavishri A N S', marks: 95 }
-          ]
-        }
-      },
-      results: [
-        {
-          examName: 'JEE Mock Test 1',
-          date: '2025-07-15',
-          subjects: {
-            Physics: 85,
-            Chemistry: 92,
-            Mathematics: 88
-          },
-          rank: 3,
-          totalStudents: 120
-        },
-        {
-          examName: 'JEE Mock Test 2',
-          date: '2025-07-22',
-          subjects: {
-            Physics: 88,
-            Chemistry: 90,
-            Mathematics: 95
-          },
-          rank: 2,
-          totalStudents: 120
-        }
-      ],
-      overallStats: {
-        currentRank: 2,
-        previousRank: 3,
-        batchStrength: 120,
-        averageScore: 89.67,
-        attendance: 98,
-        subjectRanks: {
-          Physics: 4,
-          Chemistry: 2,
-          Mathematics: 1
-        },
-        improvement: {
-          Physics: "+3%",
-          Chemistry: "-2%",
-          Mathematics: "+7%"
-        }
-      }
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // If logged in as student via Firebase, automatically load their results
     if (user?.role === 'student' && user?.rollNumber) {
       setRollNumber(user.rollNumber);
-      handleSearch();
+      handleSearch(user.rollNumber);
     }
   }, [user]);
 
-  const handleSearch = () => {
+  const handleSearch = async (searchRollNumber = rollNumber) => {
+    if (!searchRollNumber.trim()) {
+      alert('Please enter a roll number');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
     setSearchPerformed(true);
-    const result = mockStudentData[rollNumber];
-    setStudentResults(result || null);
+
+    try {
+      console.log('Searching for student results:', searchRollNumber);
+      
+      // Try the full approach first, with fallback to basic approach
+      let processedResults = null;
+      
+      try {
+        const { studentInfo, results } = await getStudentResults(searchRollNumber);
+        
+        if (!studentInfo || results.length === 0) {
+          setStudentResults(null);
+          return;
+        }
+
+        // Get rankings data for the student's course and batch (with multiple fallbacks)
+        let rankingsData = null;
+        try {
+          rankingsData = await getAllResultsForRankings(studentInfo.course, studentInfo.batch);
+        } catch (rankingsError) {
+          console.warn('Primary rankings fetch failed, trying simple method:', rankingsError);
+          try {
+            rankingsData = await getSimpleRankingsData(studentInfo.course, studentInfo.batch);
+          } catch (simpleError) {
+            console.warn('Simple rankings fetch also failed, continuing without rankings:', simpleError);
+          }
+        }
+        
+        // Process the results to match the expected format
+        processedResults = {
+          name: studentInfo.name,
+          rollNumber: studentInfo.rollNumber,
+          course: studentInfo.course,
+          batch: studentInfo.batch,
+          results: results.map(result => ({
+            examName: result.examName,
+            date: result.examDate,
+            subjects: result.subjects,
+            rank: result.rank,
+            totalStudents: result.totalStudents,
+            totalMarks: result.totalMarks,
+            percentage: result.percentage
+          })),
+          overallStats: calculateOverallStats(results, rankingsData, searchRollNumber),
+          classRankings: calculateClassRankings(rankingsData, searchRollNumber)
+        };
+        
+      } catch (fullError) {
+        console.warn('Full approach failed, trying basic approach:', fullError);
+        processedResults = await getBasicStudentData(searchRollNumber);
+      }
+
+      setStudentResults(processedResults);
+      
+    } catch (err) {
+      console.error('Error fetching student results:', err);
+      setError('Failed to fetch results. Please try again.');
+      setStudentResults(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateOverallStats = (results, rankingsData, rollNumber) => {
+    if (!results || results.length === 0) {
+      return {
+        currentRank: 'N/A',
+        previousRank: 'N/A',
+        batchStrength: 'N/A',
+        averageScore: 'N/A',
+        subjectRanks: {
+          Physics: 'N/A',
+          Chemistry: 'N/A',
+          Mathematics: 'N/A'
+        },
+        improvement: {
+          Physics: 'N/A',
+          Chemistry: 'N/A', 
+          Mathematics: 'N/A'
+        }
+      };
+    }
+
+    const latestResult = results[0]; // Most recent result
+    const previousResult = results[1]; // Previous result if exists
+    
+    // Calculate subject ranks if we have rankings data
+    const subjectRanks = calculateSubjectRanks(rankingsData, rollNumber);
+    const improvement = calculateImprovement(results);
+    
+    return {
+      currentRank: latestResult.rank || 'N/A',
+      previousRank: previousResult?.rank || 'N/A',
+      batchStrength: latestResult.totalStudents || 'N/A',
+      averageScore: latestResult.percentage || 'N/A',
+      subjectRanks,
+      improvement
+    };
+  };
+
+  const calculateSubjectRanks = (rankingsData, rollNumber) => {
+    if (!rankingsData || !rankingsData.results) {
+      return {
+        Physics: 'N/A',
+        Chemistry: 'N/A',
+        Mathematics: 'N/A'
+      };
+    }
+
+    const subjects = ['Physics', 'Chemistry', 'Mathematics'];
+    const subjectRanks = {};
+
+    subjects.forEach(subject => {
+      const subjectKey = subject.toLowerCase();
+      const sortedBySubject = rankingsData.results
+        .filter(result => result[subjectKey] > 0)
+        .sort((a, b) => (b[subjectKey] || 0) - (a[subjectKey] || 0));
+      
+      const studentIndex = sortedBySubject.findIndex(result => 
+        result.rollNumber === rollNumber
+      );
+      
+      subjectRanks[subject] = studentIndex >= 0 ? studentIndex + 1 : 'N/A';
+    });
+
+    return subjectRanks;
+  };
+
+  const calculateImprovement = (results) => {
+    if (results.length < 2) {
+      return {
+        Physics: 'N/A',
+        Chemistry: 'N/A',
+        Mathematics: 'N/A'
+      };
+    }
+
+    const latest = results[0].subjects;
+    const previous = results[1].subjects;
+    const improvement = {};
+
+    Object.keys(latest).forEach(subject => {
+      const latestMark = latest[subject] || 0;
+      const previousMark = previous[subject] || 0;
+      
+      if (previousMark > 0) {
+        const change = ((latestMark - previousMark) / previousMark) * 100;
+        improvement[subject] = change > 0 ? `+${change.toFixed(1)}%` : `${change.toFixed(1)}%`;
+      } else {
+        improvement[subject] = 'N/A';
+      }
+    });
+
+    return improvement;
+  };
+
+  const calculateClassRankings = (rankingsData, rollNumber) => {
+    // If no rankings data available, return basic structure
+    if (!rankingsData || !rankingsData.results) {
+      return {
+        toppers: [],
+        studentPosition: 'N/A',
+        totalStudents: 'N/A',
+        subjectToppers: {
+          Physics: [],
+          Chemistry: [],
+          Mathematics: []
+        }
+      };
+    }
+
+    // Get overall toppers
+    const toppers = calculateOverallToppers(rankingsData.results);
+
+    // Calculate student position
+    const sortedResults = rankingsData.results
+      .filter(result => result.rank)
+      .sort((a, b) => parseInt(a.rank) - parseInt(b.rank));
+
+    const studentPosition = sortedResults.findIndex(result => 
+      result.rollNumber === rollNumber
+    ) + 1;
+
+    // Get subject toppers
+    const subjectToppers = {
+      Physics: getSubjectToppers(rankingsData.results, 'Physics'),
+      Chemistry: getSubjectToppers(rankingsData.results, 'Chemistry'),
+      Mathematics: getSubjectToppers(rankingsData.results, 'Mathematics')
+    };
+
+    return {
+      toppers,
+      studentPosition: studentPosition || 'N/A',
+      totalStudents: rankingsData.results.length,
+      subjectToppers
+    };
+  };
+
+  // Simplified version that works without rankings
+  const getBasicStudentData = async (searchRollNumber) => {
+    try {
+      const { studentInfo, results } = await getStudentResults(searchRollNumber);
+      
+      if (!studentInfo || results.length === 0) {
+        return null;
+      }
+
+      // Create basic results without complex rankings
+      return {
+        name: studentInfo.name,
+        rollNumber: studentInfo.rollNumber,
+        course: studentInfo.course,
+        batch: studentInfo.batch,
+        results: results.map(result => ({
+          examName: result.examName,
+          date: result.examDate,
+          subjects: result.subjects,
+          rank: result.rank,
+          totalStudents: result.totalStudents,
+          totalMarks: result.totalMarks,
+          percentage: result.percentage
+        })),
+        overallStats: {
+          currentRank: results[0]?.rank || 'N/A',
+          previousRank: results[1]?.rank || 'N/A',
+          batchStrength: results[0]?.totalStudents || 'N/A',
+          averageScore: results[0]?.percentage || 'N/A',
+          subjectRanks: {
+            Physics: 'N/A',
+            Chemistry: 'N/A',
+            Mathematics: 'N/A'
+          },
+          improvement: {
+            Physics: 'N/A',
+            Chemistry: 'N/A',
+            Mathematics: 'N/A'
+          }
+        },
+        classRankings: {
+          toppers: [],
+          studentPosition: results[0]?.rank || 'N/A',
+          totalStudents: results[0]?.totalStudents || 'N/A',
+          subjectToppers: {
+            Physics: [],
+            Chemistry: [],
+            Mathematics: []
+          }
+        }
+      };
+    } catch (error) {
+      console.error('Error in basic student data fetch:', error);
+      throw error;
+    }
   };
 
   const calculateTotal = (subjects) => {
@@ -140,20 +325,43 @@ const StudentDashboard = () => {
                 />
               </div>
               <Button
-                onClick={handleSearch}
+                onClick={() => handleSearch()}
+                disabled={loading}
                 className="bg-[#13ad89] hover:bg-[#0f8c6d]"
               >
-                View Results
+                {loading ? 'Searching...' : 'View Results'}
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Results Display */}
-        {searchPerformed && !studentResults && (
+        {/* Error Message */}
+        {error && (
           <Card className="mb-8 border-red-200 bg-red-50">
             <CardContent className="pt-6">
-              <p className="text-red-600">No results found for the given roll number. Please check and try again.</p>
+              <p className="text-red-600">{error}</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Results Display */}
+        {searchPerformed && !loading && !studentResults && !error && (
+          <Card className="mb-8 border-red-200 bg-red-50">
+            <CardContent className="pt-6">
+              <div className="space-y-3">
+                <p className="text-red-600 font-medium">No results found for roll number: "{rollNumber}"</p>
+                <div className="text-sm text-red-500">
+                  <p className="font-medium mb-2">Possible reasons:</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>No exam results have been published yet</li>
+                    <li>Your roll number might be different</li>
+                    <li>Results for your exam/batch haven't been uploaded</li>
+                  </ul>
+                  <p className="mt-3 text-blue-600">
+                    💡 Check the browser console for available roll numbers or contact your admin.
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -180,10 +388,6 @@ const StudentDashboard = () => {
                     <div>
                       <p className="text-sm text-gray-500">Batch</p>
                       <p className="font-medium">{studentResults.batch}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Attendance</p>
-                      <p className="font-medium">{studentResults.overallStats.attendance}%</p>
                     </div>
                   </div>
                 </CardContent>

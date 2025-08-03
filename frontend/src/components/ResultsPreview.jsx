@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from './ui/button';
 
 const ResultsPreview = ({ examDetails, results, headers, onClose, onConfirm }) => {
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsPublishing(true);
+    try {
+      await onConfirm();
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   console.log('ResultsPreview received:', { headers, results });
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
@@ -12,14 +23,16 @@ const ResultsPreview = ({ examDetails, results, headers, onClose, onConfirm }) =
             <h2 className="text-2xl font-bold text-gray-900">Preview Results</h2>
             <div className="flex items-center gap-3">
               <Button
-                onClick={onConfirm}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold"
+                onClick={handleConfirm}
+                disabled={isPublishing}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-6 py-2 rounded-lg font-semibold"
               >
-                Publish
+                {isPublishing ? 'Publishing...' : 'Publish'}
               </Button>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                disabled={isPublishing}
+                className="p-2 hover:bg-gray-100 disabled:hover:bg-transparent rounded-full transition-colors"
               >
                 <X className="h-6 w-6 text-gray-500" />
               </button>
@@ -90,8 +103,13 @@ const ResultsPreview = ({ examDetails, results, headers, onClose, onConfirm }) =
           <div className="mt-6">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <p className="text-sm text-blue-700">
-                Please review all the details carefully. Once published, these results will be visible to students.
+                Please review all the details carefully. Once published, these results will be immediately visible to students in their dashboard.
               </p>
+              {isPublishing && (
+                <p className="text-sm text-blue-600 mt-2 font-medium">
+                  Publishing results to Firebase... Please wait.
+                </p>
+              )}
             </div>
           </div>
         </div>

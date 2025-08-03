@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Upload } from 'lucide-react';
 import ResultsPreview from '../components/ResultsPreview';
+import { publishResults } from '../lib/results-service';
 import * as XLSX from 'xlsx';
 
 const PublishResults = () => {
@@ -55,33 +56,53 @@ const PublishResults = () => {
             label: header
           }));
 
-          // Find marks/score column for sorting
+          // Find marks/score column for sorting (updated for your CSV format)
           const marksHeader = fileHeaders.find(header => 
+            header.toLowerCase().includes('total marks') ||  // Your CSV format
+            header.toLowerCase().includes('total') ||
             header.toLowerCase().includes('mark') || 
             header.toLowerCase().includes('score')
-          ) || fileHeaders[0];
+          ) || fileHeaders[fileHeaders.length - 1];  // Use last column as fallback
 
-          // Format and sort the data
+          // Format and sort the data with careful undefined handling
           const formattedData = jsonData
-            .map(row => {
+            .map((row, rowIndex) => {
+              console.log(`Processing Excel row ${rowIndex + 1}:`, row);
               const formattedRow = {};
+              
               fileHeaders.forEach(header => {
+                const cellValue = row[header];
+                console.log(`Cell ${header}:`, cellValue, typeof cellValue);
+                
                 if (header === marksHeader) {
-                  // Convert marks to number
-                  formattedRow[header] = parseInt(row[header] || '0', 10);
+                  // Convert marks to number, handle undefined/null/empty
+                  const numValue = parseInt(cellValue || '0', 10);
+                  formattedRow[header] = isNaN(numValue) ? 0 : numValue;
                 } else {
-                  formattedRow[header] = row[header] || '';
+                  // Convert all other values to string, handle undefined/null
+                  formattedRow[header] = (cellValue !== undefined && cellValue !== null) ? String(cellValue) : '';
                 }
               });
+              
+              console.log(`Formatted row ${rowIndex + 1}:`, formattedRow);
               return formattedRow;
             })
-            .sort((a, b) => b[marksHeader] - a[marksHeader]);
+            .sort((a, b) => (b[marksHeader] || 0) - (a[marksHeader] || 0));
 
-          // Add ranks to sorted data
-          const finalData = formattedData.map((row, index) => ({
-            ...row,
-            'Rank': (index + 1).toString()
-          }));
+          // Add ranks to sorted data with explicit field creation
+          const finalData = formattedData.map((row, index) => {
+            const rankedRow = {};
+            
+            // Copy all existing fields with explicit undefined check
+            fileHeaders.forEach(header => {
+              rankedRow[header] = row[header] !== undefined ? row[header] : '';
+            });
+            
+            // Add rank
+            rankedRow['Rank'] = (index + 1).toString();
+            
+            return rankedRow;
+          });
 
           // Add Rank header if not present
           if (!tableHeaders.some(h => h.label === 'Rank')) {
@@ -89,7 +110,18 @@ const PublishResults = () => {
           }
 
           console.log('Table Headers:', tableHeaders);
-          console.log('Final Data:', finalData);
+          console.log('Final Data Sample:', finalData[0]);
+          console.log('Final Data Length:', finalData.length);
+          
+          // Validate final data for undefined values
+          finalData.forEach((row, index) => {
+            Object.keys(row).forEach(key => {
+              if (row[key] === undefined) {
+                console.error(`Found undefined value in row ${index + 1}, column ${key}`);
+                row[key] = '';
+              }
+            });
+          });
 
           // Update state
           setTableHeaders(tableHeaders);
@@ -112,17 +144,22 @@ const PublishResults = () => {
       alert('Please upload results before publishing');
       return;
     }
+    
+    if (!examDetails.examName || !examDetails.examDate || !examDetails.course || !examDetails.batch) {
+      alert('Please fill in all exam details before publishing');
+      return;
+    }
+    
     try {
-      const fullResultData = {
-        exam_name: examDetails.examName,
-        exam_date: examDetails.examDate,
-        course: examDetails.course,
-        batch: examDetails.batch,
-        results: results,
-      };
-      await apiPublishResults(fullResultData);
+      console.log('Publishing results to Firebase...');
+      console.log('Exam Details:', examDetails);
+      console.log('Results Data:', results);
+      console.log('Sample Result:', results[0]);
+      
+      await publishResults(examDetails, results);
       alert('Results published successfully!');
       navigate('/admin');
+      
     } catch (error) {
       alert(`Failed to publish results: ${error.message}`);
       console.error('Publish results error:', error);
