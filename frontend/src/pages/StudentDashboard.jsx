@@ -452,6 +452,143 @@ const StudentDashboard = () => {
               </Card>
             </div>
 
+            {/* Current Subject Marks */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Current Subject Marks</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {studentResults.results && studentResults.results.length > 0 && (
+                  <div className="space-y-6">
+                    {/* Latest Exam Subject Breakdown */}
+                    <div>
+                      <h3 className="font-medium text-lg mb-4">Latest Exam: {studentResults.results[0].examName}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {Object.entries(studentResults.results[0].subjects).map(([subject, marks]) => {
+                          const percentage = (marks / 100) * 100;
+                          const gradeColor = percentage >= 90 ? 'text-green-600' : 
+                                           percentage >= 75 ? 'text-blue-600' : 
+                                           percentage >= 50 ? 'text-yellow-600' : 'text-red-600';
+                          const bgColor = percentage >= 90 ? 'bg-green-50 border-green-200' : 
+                                         percentage >= 75 ? 'bg-blue-50 border-blue-200' : 
+                                         percentage >= 50 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200';
+                          
+                          return (
+                            <div key={subject} className={`p-6 rounded-lg border-2 ${bgColor}`}>
+                              <div className="text-center">
+                                <h4 className="text-lg font-semibold text-gray-800 mb-2">{subject}</h4>
+                                <div className="mb-3">
+                                  <span className={`text-4xl font-bold ${gradeColor}`}>
+                                    {marks}
+                                  </span>
+                                  <span className="text-xl text-gray-500 ml-1">/100</span>
+                                </div>
+                                <div className="space-y-2">
+                                  <div className={`text-lg font-medium ${gradeColor}`}>
+                                    {percentage.toFixed(1)}%
+                                  </div>
+                                  <div className="w-full bg-gray-200 rounded-full h-3">
+                                    <div 
+                                      className={`h-3 rounded-full transition-all duration-300 ${
+                                        percentage >= 90 ? 'bg-green-500' : 
+                                        percentage >= 75 ? 'bg-blue-500' : 
+                                        percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                                      }`}
+                                      style={{ width: `${Math.min(percentage, 100)}%` }}
+                                    ></div>
+                                  </div>
+                                  <div className={`text-sm font-medium ${gradeColor}`}>
+                                    {percentage >= 90 ? 'Excellent' : 
+                                     percentage >= 75 ? 'Good' : 
+                                     percentage >= 50 ? 'Average' : 'Needs Improvement'}
+                                  </div>
+                                  {studentResults.overallStats.subjectRanks[subject] !== 'N/A' && (
+                                    <div className="text-sm text-gray-600">
+                                      Rank: #{studentResults.overallStats.subjectRanks[subject]}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Subject Performance Comparison */}
+                    {studentResults.results.length > 1 && (
+                      <div>
+                        <h3 className="font-medium text-lg mb-4">Performance Trend</h3>
+                        <div className="bg-gray-50 rounded-lg p-6">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {Object.keys(studentResults.results[0].subjects).map(subject => {
+                              const currentMarks = studentResults.results[0].subjects[subject];
+                              const previousMarks = studentResults.results[1]?.subjects[subject] || 0;
+                              const change = currentMarks - previousMarks;
+                              const changePercent = previousMarks > 0 ? ((change / previousMarks) * 100).toFixed(1) : 0;
+                              
+                              return (
+                                <div key={subject} className="bg-white rounded-lg p-4 border">
+                                  <div className="flex justify-between items-center mb-2">
+                                    <h4 className="font-medium">{subject}</h4>
+                                    <div className={`flex items-center text-sm ${
+                                      change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-gray-600'
+                                    }`}>
+                                      {change > 0 ? '↗' : change < 0 ? '↘' : '→'}
+                                      <span className="ml-1">
+                                        {change > 0 ? '+' : ''}{change} ({changePercent > 0 ? '+' : ''}{changePercent}%)
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="flex justify-between text-sm text-gray-600">
+                                    <span>Current: {currentMarks}</span>
+                                    <span>Previous: {previousMarks}</span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Overall Summary */}
+                    <div>
+                      <h3 className="font-medium text-lg mb-4">Overall Summary</h3>
+                      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-6 border">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-600">
+                              {calculateTotal(studentResults.results[0].subjects)}
+                            </div>
+                            <div className="text-sm text-gray-600">Total Marks</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-green-600">
+                              {calculatePercentage(studentResults.results[0].subjects)}%
+                            </div>
+                            <div className="text-sm text-gray-600">Percentage</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-purple-600">
+                              #{studentResults.results[0].rank}
+                            </div>
+                            <div className="text-sm text-gray-600">Class Rank</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-orange-600">
+                              {Object.keys(studentResults.results[0].subjects).length}
+                            </div>
+                            <div className="text-sm text-gray-600">Subjects</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Class Rankings */}
             <Card>
               <CardHeader>

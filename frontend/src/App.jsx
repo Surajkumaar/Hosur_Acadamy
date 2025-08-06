@@ -5,13 +5,11 @@ import { AuthProvider } from "./contexts/AuthContext";
 import RequireAuth from "./components/RequireAuth";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import RefreshWarning from "./components/RefreshWarning";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Courses from "./pages/Courses";
 import Gallery from "./pages/Gallery";
 import Toppers from "./pages/Toppers";
-import Inquiry from "./pages/Inquiry";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
@@ -20,6 +18,7 @@ import FirebaseSetup from "./pages/FirebaseSetup";
 import FirebaseDebug from "./pages/FirebaseDebug";
 import PublishResults from "./pages/PublishResults";
 import ManageStudents from "./pages/ManageStudents";
+import ManageResults from "./pages/ManageResults";
 import StudentDashboard from "./pages/StudentDashboard";
 import TestStudentLogin from "./pages/TestStudentLogin";
 import SessionTest from "./pages/SessionTest";
@@ -31,7 +30,6 @@ const App = () => {
       <AuthProvider>
         <BrowserRouter>
           <Header />
-          <RefreshWarning />
           <main className="pt-20">
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -39,7 +37,6 @@ const App = () => {
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/toppers" element={<Toppers />} />
-                <Route path="/inquiry" element={<Inquiry />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/firebase-test" element={<FirebaseTest />} />
                 <Route path="/firebase-setup" element={<FirebaseSetup />} />
@@ -82,6 +79,14 @@ const App = () => {
                   element={
                     <RequireAuth allowedRoles={['admin']}>
                       <ManageStudents />
+                    </RequireAuth>
+                  } 
+                />
+                <Route 
+                  path="/admin/manage-results" 
+                  element={
+                    <RequireAuth allowedRoles={['admin']}>
+                      <ManageResults />
                     </RequireAuth>
                   } 
                 />

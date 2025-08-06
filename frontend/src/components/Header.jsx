@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,9 +32,7 @@ const Header = () => {
     { name: 'Gallery', path: '/gallery' },
     { name: 'Toppers', path: '/toppers' },
     { name: 'Results', path: '/results' },
-    { name: 'Inquiry', path: '/inquiry' },
     // Add conditional navigation items based on authentication
-    ...(isAuthenticated ? [] : [{ name: 'Login', path: '/login' }]),
     ...(userRole === 'admin' ? [{ name: 'Admin', path: '/admin' }] : []),
     ...(userRole === 'student' ? [{ name: 'Dashboard', path: '/student-dashboard' }] : []),
   ];
@@ -63,12 +62,17 @@ const Header = () => {
       timestamp: new Date().toISOString(),
       source: 'header_cta'
     }));
-    // Navigate to inquiry form
-    window.location.href = '/inquiry';
-  };
-
-  const handleLoginClick = () => {
-    setIsMenuOpen(false); // Close mobile menu if open
+    
+    // If we're not on the home page, navigate to home first
+    if (location.pathname !== '/') {
+      window.location.href = '/#inquiry-form';
+    } else {
+      // If on home page, scroll to inquiry form
+      const inquirySection = document.getElementById('inquiry-form');
+      if (inquirySection) {
+        inquirySection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
 
   return (
@@ -118,23 +122,25 @@ const Header = () => {
                       ))}
                     </div>
                     <hr className="my-2 border-gray-200" />
-                    <div className="space-y-1">
-                      {navigation.slice(6).map((item) => (
-                        <Link
-                          key={item.name}
-                          to={item.path}
-                          onClick={() => item.name === 'Login' ? handleLoginClick() : setIsMenuOpen(false)}
-                          className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                            location.pathname === item.path
-                              ? 'bg-[#0052CC] text-white'
-                              : 'text-gray-700 hover:bg-gray-50'
-                          }`}
-                        >
-                          {/* You can add icons here if you have them */}
-                          <span>{item.name}</span>
-                        </Link>
-                      ))}
-                    </div>
+                    {navigation.length > 6 && (
+                      <div className="space-y-1">
+                        {navigation.slice(6).map((item) => (
+                          <Link
+                            key={item.name}
+                            to={item.path}
+                            onClick={() => setIsMenuOpen(false)}
+                            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                              location.pathname === item.path
+                                ? 'bg-[#0052CC] text-white'
+                                : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            {/* You can add icons here if you have them */}
+                            <span>{item.name}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div 
                     className="fixed inset-0 -z-10" 
@@ -145,24 +151,26 @@ const Header = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex items-center space-x-3">
+            <div className="hidden md:flex items-center space-x-3">
               <Button 
                 onClick={handleCall}
                 variant="outline" 
                 className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-colors"
               >
                 <Phone className="h-4 w-4 mr-2" />
-                Call Now
+                <span className="hidden lg:inline">Call Now</span>
+                <Phone className="h-4 w-4 lg:hidden" />
               </Button>
               <Button 
                 onClick={handleEnrollClick}
                 className="bg-[#39C93D] hover:bg-[#2db832] text-white transition-colors"
               >
-                Enroll Now
+                <span className="hidden lg:inline">Enroll Now</span>
+                <span className="lg:hidden">Enroll</span>
               </Button>
               {isAuthenticated ? (
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 hidden xl:block">
                     {userProfile?.email || currentUser?.email || 'User'}
                   </span>
                   <Button 
@@ -171,7 +179,7 @@ const Header = () => {
                     className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
-                    Logout
+                    <span className="hidden lg:inline">Logout</span>
                   </Button>
                 </div>
               ) : (
@@ -181,14 +189,121 @@ const Header = () => {
                     className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-colors"
                   >
                     <LogIn className="h-4 w-4 mr-2" />
-                    Login
+                    <span className="hidden lg:inline">Login</span>
                   </Button>
                 </Link>
               )}
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                variant="outline"
+                size="sm"
+                className="border-[#0052CC] text-[#0052CC]"
+              >
+                <div className="flex flex-col space-y-1">
+                  <div className="w-4 h-0.5 bg-current"></div>
+                  <div className="w-4 h-0.5 bg-current"></div>
+                  <div className="w-4 h-0.5 bg-current"></div>
+                </div>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <div className="fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-[#002357]">Menu</h2>
+                <Button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  variant="ghost"
+                  size="sm"
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+              </div>
+              
+              {/* Mobile Navigation */}
+              <div className="space-y-2 mb-6">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                      location.pathname === item.path
+                        ? 'bg-[#0052CC] text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Mobile Action Buttons */}
+              <div className="space-y-3 border-t pt-6">
+                <Button 
+                  onClick={() => {
+                    handleCall();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  variant="outline" 
+                  className="w-full border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white"
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  Call Now
+                </Button>
+                <Button 
+                  onClick={() => {
+                    handleEnrollClick();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full bg-[#39C93D] hover:bg-[#2db832] text-white"
+                >
+                  Enroll Now
+                </Button>
+                {isAuthenticated ? (
+                  <div className="space-y-3">
+                    <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">
+                      {userProfile?.email || currentUser?.email || 'User'}
+                    </div>
+                    <Button 
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      variant="outline"
+                      className="w-full border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button 
+                      variant="outline"
+                      className="w-full border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white"
+                    >
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* WhatsApp Floating Button */}
       <button

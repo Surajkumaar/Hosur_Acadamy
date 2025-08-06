@@ -1,16 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
 import { showNotification } from '../lib/firebase';
+import { 
+  db, 
+  collection, 
+  getDocs, 
+  query, 
+  where 
+} from '../lib/firebase';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { currentUser, userProfile, loading, logout } = useAuth();
   const hasRunEffect = useRef(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [publishedResults, setPublishedResults] = useState(0);
+  const [statsLoading, setStatsLoading] = useState(true);
   const { toast } = useToast();
 
   const handleLogout = async () => {
@@ -52,6 +62,62 @@ const Admin = () => {
     }
   };
 
+  // Function to fetch dashboard statistics
+  const fetchDashboardStats = async () => {
+    try {
+      setStatsLoading(true);
+      console.log("📊 Fetching dashboard statistics...");
+
+      // Count total students from users collection
+      const usersRef = collection(db, 'users');
+      const studentsQuery = query(usersRef, where('role', '==', 'student'));
+      const studentsSnapshot = await getDocs(studentsQuery);
+      const studentCount = studentsSnapshot.size;
+      
+      console.log(`👥 Found ${studentCount} students`);
+      setTotalStudents(studentCount);
+
+      // Count published exam results
+      const examResultsRef = collection(db, 'examResults');
+      const examResultsSnapshot = await getDocs(examResultsRef);
+      const resultsCount = examResultsSnapshot.size;
+      
+      console.log(`📋 Found ${resultsCount} published results`);
+      setPublishedResults(resultsCount);
+
+    } catch (error) {
+      console.error("❌ Error fetching dashboard stats:", error);
+      
+      // Fallback to show 0 if there's an error
+      setTotalStudents(0);
+      setPublishedResults(0);
+      
+      showNotification(toast, {
+        title: "Stats Error",
+        description: "Could not load dashboard statistics. Please refresh the page.",
+        type: "error"
+      });
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  // Add event listener for storage events to refresh stats when data changes
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'admin_dashboard_refresh') {
+        console.log("🔄 Dashboard refresh triggered by another component");
+        fetchDashboardStats();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   useEffect(() => {
     // Prevent multiple executions
     if (hasRunEffect.current) return;
@@ -76,6 +142,8 @@ const Admin = () => {
         navigate('/login');
       } else {
         console.log("✅ Admin access granted");
+        // Fetch dashboard statistics once admin access is confirmed
+        fetchDashboardStats();
       }
     }
   }, [currentUser, userProfile, loading, navigate]);
@@ -111,37 +179,48 @@ const Admin = () => {
                 <span className="text-sm font-medium">{userProfile?.role || 'Admin'}</span>
               </div>
               <Button
-                onClick={handleLogout}
-                disabled={isLoggingOut}
+                onClick={fetchDashboardStats}
+                disabled={statsLoading}
                 variant="outline"
-                className="flex items-center space-x-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                className="flex items-center space-x-2 border-gray-300 text-gray-600 hover:bg-gray-50"
+                title="Refresh Statistics"
               >
-                <LogOut className="h-4 w-4" />
-                <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
+                <RefreshCw className={`h-4 w-4 ${statsLoading ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
               </Button>
             </div>
           </div>
           
           {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="bg-blue-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold text-blue-900">Total Students</h3>
-              <p className="text-3xl font-bold text-blue-600">150</p>
-            </div>
-            <div className="bg-green-50 p-6 rounded-lg">
-              <h3 className="text-lg font-semibold text-green-900">Active Courses</h3>
-              <p className="text-3xl font-bold text-green-600">12</p>
+              {statsLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <span className="text-blue-400">Loading...</span>
+                </div>
+              ) : (
+                <p className="text-3xl font-bold text-blue-600">{totalStudents}</p>
+              )}
             </div>
             <div className="bg-purple-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold text-purple-900">Published Results</h3>
-              <p className="text-3xl font-bold text-purple-600">8</p>
+              {statsLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+                  <span className="text-purple-400">Loading...</span>
+                </div>
+              ) : (
+                <p className="text-3xl font-bold text-purple-600">{publishedResults}</p>
+              )}
             </div>
           </div>
 
           {/* Quick Actions */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Link to="/admin/manage-students" className="block">
                   <Button
@@ -156,17 +235,6 @@ const Admin = () => {
                 </Link>
               </div>
               <div>
-                <Button
-                  variant="outline"
-                  className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white p-4 h-auto w-full"
-                >
-                  <div className="text-left">
-                    <h3 className="font-semibold">Manage Courses</h3>
-                    <p className="text-sm opacity-75">Add or modify course details</p>
-                  </div>
-                </Button>
-              </div>
-              <div>
                 <Link to="/admin/publish-results" className="block">
                   <Button
                     variant="outline"
@@ -179,28 +247,18 @@ const Admin = () => {
                   </Button>
                 </Link>
               </div>
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="space-y-4">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
-                    <div>
-                      <h4 className="font-medium">New Student Registration</h4>
-                      <p className="text-sm text-gray-500">2 hours ago</p>
+              <div>
+                <Link to="/admin/manage-results" className="block">
+                  <Button
+                    variant="outline"
+                    className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white p-4 h-auto w-full"
+                  >
+                    <div className="text-left">
+                      <h3 className="font-semibold">Manage Results</h3>
+                      <p className="text-sm opacity-75">View and delete published results</p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      className="text-[#0052CC] hover:text-[#0052CC] hover:bg-blue-50"
-                    >
-                      View Details
-                    </Button>
-                  </div>
-                ))}
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

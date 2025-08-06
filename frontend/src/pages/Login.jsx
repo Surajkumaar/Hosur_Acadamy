@@ -230,28 +230,6 @@ const Login = () => {
               <p className="text-xs text-gray-500 mt-1">
                 <strong>Students:</strong> Use your date of birth as password (format: YYYY-MM-DD, e.g., 2000-01-15)
               </p>
-              <p className="text-xs text-gray-500">
-                <strong>Admin:</strong> Use your admin password
-              </p>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-[#13ad89] focus:ring-[#13ad89] border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Keep me logged in
-                </label>
-              </div>
-              <div className="text-sm">
-                <a href="#" className="font-medium text-[#13ad89] hover:text-[#0f8c6d]">
-                  Forgot Password?
-                </a>
-              </div>
             </div>
 
             <Button
