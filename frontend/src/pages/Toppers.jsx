@@ -1,37 +1,30 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Filter, Award, Star, Trophy, Medal, Target, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Award, Star, Trophy, Medal, Target, ArrowRight, User } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { mockData } from '../components/mock/mockData';
 
 const Toppers = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedExam, setSelectedExam] = useState('all');
-  const [selectedYear, setSelectedYear] = useState('all');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const toppers = mockData.toppers;
 
-  const exams = useMemo(() => [...new Set(toppers.map(topper => topper.exam))], [toppers]);
-  const years = useMemo(() => [...new Set(toppers.map(topper => topper.year))], [toppers]);
+  // Show all toppers
+  const displayedToppers = toppers;
 
-  const filteredToppers = useMemo(() => {
-    let filtered = toppers.filter(topper => {
-      const matchesSearch = topper.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            topper.exam.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            topper.course.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesExam = selectedExam === 'all' || topper.exam === selectedExam;
-      const matchesYear = selectedYear === 'all' || topper.year === selectedYear;
-      
-      return matchesSearch && matchesExam && matchesYear;
-    });
-
-    return filtered;
-  }, [searchTerm, selectedExam, selectedYear, toppers]);
+  const handleInquireClick = (topper) => {
+    // Save topper interest to localStorage for backend integration
+    localStorage.setItem('topperInterest', JSON.stringify({
+      topperId: topper.id,
+      topperName: topper.name,
+      course: topper.course,
+      exam: topper.exam,
+      timestamp: new Date().toISOString()
+    }));
+    window.location.href = '/#inquiry-form';
+  };
 
   useEffect(() => {
     if (window.location.hash === '#top-achievers') {
@@ -59,9 +52,9 @@ const Toppers = () => {
 
   const getRankColor = (rank) => {
     if (rank === 1) return 'bg-yellow-500';
-    if (rank === 2) return 'bg-gray-400';
+    if (rank === 2) return 'bg-yellow-400';
     if (rank === 3) return 'bg-orange-500';
-    return 'bg-gray-200';
+    return 'bg-yellow-300';
   };
 
   return (
@@ -85,108 +78,38 @@ const Toppers = () => {
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section className="py-8 bg-gray-50 border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search toppers..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-gray-600" />
-                <span className="text-sm text-gray-600">Filter by:</span>
-              </div>
-              
-              <Select value={selectedExam} onValueChange={setSelectedExam}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Exam" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Exams</SelectItem>
-                  {exams.map(exam => (
-                    <SelectItem key={exam} value={exam.split(' ')[0]}>{exam.split(' ')[0]}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Years</SelectItem>
-                  {years.map(year => (
-                    <SelectItem key={year} value={year}>{year}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
-            <span>Showing {filteredToppers.length} of {toppers.length} toppers</span>
-            {(searchTerm || selectedExam !== 'all' || selectedYear !== 'all') && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSearchTerm('');
-                  setSelectedExam('all');
-                  setSelectedYear('all');
-                }}
-                className="text-[#0052CC] hover:text-[#0041a3]"
-              >
-                Clear Filters
-              </Button>
-            )}
-          </div>
-        </div>
-      </section>
-
       {/* Toppers Grid */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          {filteredToppers.length === 0 ? (
+          {displayedToppers.length === 0 ? (
             <div className="text-center py-16">
               <Trophy className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No toppers found</h3>
               <p className="text-gray-600">Try adjusting your search or filter criteria</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {filteredToppers.map((topper) => (
-                <Card key={topper.id} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg">
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl">
+                {displayedToppers.map((topper) => (
+                <Card key={topper.id} className="border-0 shadow-lg h-full flex flex-col">
                   <CardHeader className="text-center pb-4">
                     <div className="relative mb-4">
-                      <img
-                        src={topper.image}
-                        alt={topper.name}
-                        className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-[#39C93D] group-hover:border-[#0052CC] transition-colors"
-                      />
-                      <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-full flex items-center justify-center">
-                        {getRankIcon(topper.rank)}
+                      <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-[#39C93D] to-[#2db832] border-4 border-[#39C93D] flex items-center justify-center">
+                        <User className="h-12 w-12 text-white" />
                       </div>
                     </div>
-                    <CardTitle className="text-xl font-bold text-[#002357] group-hover:text-[#0052CC] transition-colors">
+                    <CardTitle className="text-xl font-bold text-[#002357]">
                       {topper.name}
                     </CardTitle>
                     <div className="space-y-2">
-                      <Badge className={`${getRankColor(topper.rank)} text-sm`}>
+                      <Badge className={`${getRankColor(topper.rank)} text-sm text-blue-600`}>
                         {topper.rank}
                       </Badge>
                       <div className="text-sm text-gray-600">{topper.exam}</div>
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex-grow flex flex-col">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-[#0052CC] mb-1">{topper.score}</div>
                       <div className="text-sm text-gray-600">Score Achieved</div>
@@ -197,7 +120,7 @@ const Toppers = () => {
                       <p className="text-sm text-gray-600">{topper.course}</p>
                     </div>
                     
-                    <div className="bg-[#39C93D] bg-opacity-10 p-4 rounded-lg">
+                    <div className="bg-[#39C93D] bg-opacity-10 p-4 rounded-lg flex-grow">
                       <h4 className="font-semibold text-[#002357] mb-2">Testimonial:</h4>
                       <p className="text-sm text-gray-600 italic">"{topper.testimonial}"</p>
                     </div>
@@ -209,7 +132,7 @@ const Toppers = () => {
                     </div>
                     
                     <Button 
-                      className="w-full bg-[#39C93D] hover:bg-[#2db832] text-white transition-colors"
+                      className="w-full bg-[#39C93D] text-blue-600 mt-auto"
                       onClick={() => handleInquireClick(topper)}
                     >
                       Follow Their Path
@@ -218,12 +141,13 @@ const Toppers = () => {
                   </CardContent>
                 </Card>
               ))}
+              </div>
             </div>
           )}
         </div>
       </section>
 
-      {/* Success Stats */}
+      {/* Success Statistics */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -271,53 +195,51 @@ const Toppers = () => {
         </div>
       </section>
 
-      {/* Success Stories Categories */}
+      {/* Success Built on Strong Foundation Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-[#002357] mb-4">
-              Success Across All Streams
+              Success Built on a Strong Foundation
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Our students excel in various competitive exams and boards
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our students' achievements in various competitive exams and boards are a direct result of the exceptional groundwork laid in our Foundation Course
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "JEE Success",
-                description: "Outstanding results in JEE Main & Advanced",
-                icon: "⚡",
-                count: "150+ Selections",
-                color: "from-blue-500 to-purple-600"
-              },
-              {
-                title: "NEET Achievers",
-                description: "Medical aspirants achieving their dreams",
-                icon: "🩺",
-                count: "80+ Selections",
-                color: "from-green-500 to-teal-600"
-              },
-              {
-                title: "Board Toppers",
-                description: "Excellent performance in board examinations",
-                icon: "📚",
-                count: "200+ Toppers",
-                color: "from-orange-500 to-red-600"
-              }
-            ].map((category, index) => (
-              <Card key={index} className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="p-8">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                    <span className="text-2xl">{category.icon}</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-[#002357] mb-2">{category.title}</h3>
-                  <p className="text-gray-600 mb-4">{category.description}</p>
-                  <div className="text-2xl font-bold text-[#0052CC]">{category.count}</div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Excellence in Board Exams */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#0052CC] to-[#002357] rounded-full flex items-center justify-center mx-auto mb-6">
+                <Trophy className="h-10 w-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#002357] mb-4">
+                Excellence in Board Exams
+              </h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                Our foundation program is designed to ensure top performance in board examinations, leading to a 100% success rate. We're proud of students like Mrithun Dharsha who scored an outstanding 480/500.
+              </p>
+              <div className="bg-[#0052CC] bg-opacity-10 rounded-lg p-6">
+                <div className="text-3xl font-bold text-[#0052CC] mb-2">200+</div>
+                <div className="text-lg font-semibold text-[#002357]">Board Toppers</div>
+              </div>
+            </div>
+
+            {/* Launching Future Doctors & Engineers */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#39C93D] to-[#2db832] rounded-full flex items-center justify-center mx-auto mb-6">
+                <Target className="h-10 w-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#002357] mb-4">
+                Launching Future Doctors & Engineers
+              </h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                The path to cracking competitive exams like NEET and JEE begins with a solid foundation. Our course builds the strong conceptual base required for students to excel in these challenging exams and secure their future.
+              </p>
+              <div className="bg-[#39C93D] bg-opacity-10 rounded-lg p-6">
+                <div className="text-3xl font-bold text-[#39C93D] mb-2">Proven Path to Success</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -335,7 +257,18 @@ const Toppers = () => {
             <Button 
               size="lg" 
               className="bg-white text-[#0052CC] hover:bg-gray-100 px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
-              onClick={() => window.location.href = '/inquiry'}
+              onClick={() => {
+                // If we're not on the home page, navigate to home first
+                if (window.location.pathname !== '/') {
+                  window.location.href = '/#inquiry-form';
+                } else {
+                  // If on home page, scroll to inquiry form
+                  const inquirySection = document.getElementById('inquiry-form');
+                  if (inquirySection) {
+                    inquirySection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }
+              }}
             >
               Start Your Journey
               <ArrowRight className="ml-2 h-5 w-5" />

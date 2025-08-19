@@ -105,7 +105,9 @@ export const AuthProvider = ({ children }) => {
               
               const isAdmin = user.email && (
                 user.email.toLowerCase().includes('admin') || 
-                user.email.toLowerCase() === 'admin@hosuracademy.com'
+                user.email.toLowerCase() === 'admin@hosuracademy.com' ||
+                user.email.toLowerCase() === 'hosurtoppersacademy@gmail.com' ||
+                user.email.toLowerCase() === 'admin@example.com'
               );
               
               const defaultProfile = {

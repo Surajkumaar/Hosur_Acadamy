@@ -87,8 +87,12 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">H</span>
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
+                  <img 
+                    src="/sub.png" 
+                    alt={mockData.institute.name} 
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-[#002357]">{mockData.institute.name}</h1>

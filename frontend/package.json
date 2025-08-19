@@ -59,7 +59,7 @@
     "zod": "^3.24.4"
   },
   "scripts": {
-    "start": "set PORT=3001&&set DISABLE_HOT_RELOAD=true&&craco start",
+    "start": "set PORT=3001&&set DISABLE_HOT_RELOAD=false&&craco start",
     "build": "craco build",
     "test": "craco test"
   },

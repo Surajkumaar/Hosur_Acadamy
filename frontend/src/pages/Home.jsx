@@ -13,7 +13,7 @@ import { sendInquiryEmail, sendAutoReplyEmail } from '../lib/emailjs-service';
 import Banner from '../components/Banner';
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('jee');
+  const [activeTab, setActiveTab] = useState('foundation');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -66,6 +66,31 @@ const Home = () => {
         message: 'I am interested in enrolling at Hosur Toppers Academy. Please provide me with more information about your courses.'
       }));
     }
+  }, []);
+
+  useEffect(() => {
+    // Handle hash-based navigation
+    const handleHashNavigation = () => {
+      const hash = window.location.hash;
+      if (hash === '#inquiry-form') {
+        setTimeout(() => {
+          const inquirySection = document.getElementById('inquiry-form');
+          if (inquirySection) {
+            inquirySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }
+    };
+
+    // Check on component mount
+    handleHashNavigation();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashNavigation);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashNavigation);
+    };
   }, []);
 
   const handleInputChange = (e) => {
@@ -202,6 +227,14 @@ const Home = () => {
   };
 
   const tabData = {
+    foundation: {
+      title: "Foundation Courses",
+      description: "Strong foundation building for grades 9-12 with conceptual learning approach",
+      image: "https://images.unsplash.com/photo-1635372722656-389f87a941b7?w=600&h=400&fit=crop",
+      features: ["Conceptual Learning", "Problem Solving", "Regular Assessment", "Doubt Support"],
+      successRate: "98%",
+      toppers: "500+"
+    },
     jee: {
       title: "JEE Main & Advanced",
       description: "Comprehensive engineering entrance exam preparation with expert faculty and proven results",
@@ -217,14 +250,6 @@ const Home = () => {
       features: ["Expert Faculty", "Practice Tests", "Performance Analysis", "Study Notes"],
       successRate: "92%",
       toppers: "180+"
-    },
-    foundation: {
-      title: "Foundation Courses",
-      description: "Strong foundation building for grades 9-12 with conceptual learning approach",
-      image: "https://images.unsplash.com/photo-1635372722656-389f87a941b7?w=600&h=400&fit=crop",
-      features: ["Conceptual Learning", "Problem Solving", "Regular Assessment", "Doubt Support"],
-      successRate: "98%",
-      toppers: "500+"
     }
   };
 
@@ -240,32 +265,37 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div className="space-y-4">
+                {/* Logo */}
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center p-2">
+                    <img 
+                      src="/sub.png" 
+                      alt={mockData.institute.name} 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">{mockData.institute.name}</h2>
+                    <p className="text-gray-200">{mockData.institute.tagline}</p>
+                  </div>
+                </div>
                 <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
                   Your Success is Our
                   <span className="block text-[#39C93D]">Mission</span>
                 </h1>
                 <p className="text-lg text-gray-200 leading-relaxed">
-                  Join India's leading educational institute with 15+ years of excellence in JEE, NEET, 
-                  and Foundation courses. Transform your dreams into reality with our expert guidance.
+                  Join Hosur's leading educational institute with 20+ years of excellence in Foundation courses, now introducing NEET and JEE coaching. Transform your dreams into reality with our expert guidance.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
+                {/* <Button
+                  size="lg"
+                  variant="outline"
                   className="border-white text-white hover:bg-white hover:text-[#002357] px-8 py-4 text-lg font-semibold"
                 >
                   <Play className="mr-2 h-5 w-5" />
-                  Watch Demo Class
-                </Button>
-                <Button 
-                  size="lg" 
-                  className="bg-[#39C93D] hover:bg-[#2db832] text-white px-8 py-4 text-lg font-semibold"
-                  onClick={() => window.location.href = '/courses'}
-                >
-                  <Play className="mr-2 h-5 w-5" />
-                  Watch Demo
-                </Button>
+                  Visit us to learn more
+                </Button> */}
               </div>
             </div>
             <div className="relative">
@@ -420,11 +450,9 @@ const Home = () => {
               <Card key={topper.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardContent className="p-6 text-center">
                   <div className="relative mb-6">
-                    <img
-                      src={topper.image}
-                      alt={topper.name}
-                      className="w-20 h-20 rounded-full mx-auto object-cover border-4 border-[#39C93D]"
-                    />
+                    <div className="w-20 h-20 rounded-full mx-auto bg-gradient-to-br from-[#0052CC] to-[#39C93D] flex items-center justify-center border-4 border-[#39C93D]">
+                      <User className="h-10 w-10 text-white" />
+                    </div>
                     <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#39C93D] rounded-full flex items-center justify-center">
                       <Trophy className="h-4 w-4 text-white" />
                     </div>
@@ -472,7 +500,7 @@ const Home = () => {
               {
                 icon: <Award className="h-8 w-8" />,
                 title: "Proven Results",
-                description: "95% success rate in competitive exams",
+                description: "95% success rate in CBSE/ICSE exams",
                 color: "from-orange-500 to-orange-600"
               }
             ].map((feature, index) => (
@@ -490,88 +518,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Top 3 Students Showcase */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#002357] mb-4">
-              Our Top Achievers
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Meet our star students who achieved remarkable success with our guidance
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {mockData.toppers.slice(0, 3).map((topper, index) => (
-              <Card key={topper.id} className="relative border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                {/* Rank Badge */}
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg ${
-                    index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
-                    index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-600' :
-                    'bg-gradient-to-r from-orange-400 to-orange-600'
-                  }`}>
-                    {index + 1}
-                  </div>
-                </div>
-                
-                <CardContent className="p-8 text-center pt-12">
-                  <div className="relative mb-6">
-                    <img
-                      src={topper.image}
-                      alt={topper.name}
-                      className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-[#39C93D]"
-                    />
-                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#39C93D] rounded-full flex items-center justify-center">
-                      <Trophy className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold text-[#002357] mb-2">{topper.name}</h3>
-                  
-                  <div className="space-y-2 mb-4">
-                    <div className="bg-[#0052CC] text-white px-4 py-2 rounded-full text-sm font-semibold">
-                      {topper.rank}
-                    </div>
-                    <div className="text-[#39C93D] font-semibold">{topper.exam}</div>
-                    <div className="text-2xl font-bold text-[#002357]">{topper.score}</div>
-                  </div>
-                  
-                  <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                    <div className="text-sm text-gray-600 mb-1">Course:</div>
-                    <div className="font-semibold text-[#002357]">{topper.course}</div>
-                  </div>
-                  
-                  <div className="bg-[#39C93D] bg-opacity-10 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 italic">"{topper.testimonial}"</p>
-                  </div>
-                  
-                  <div className="flex items-center justify-center space-x-1 mt-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link to="/toppers#top-achievers">
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-all duration-300"
-              >
-                View All Toppers
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Inquiry Form Section */}
       <section id="inquiry-form" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -584,11 +530,11 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             {/* Inquiry Form */}
             <div>
               <Card className="border-0 shadow-lg">
-                <CardContent>
+                <CardContent className="p-8">
                   {isSubmitted ? (
                     <div className="text-center py-8">
                       <div className="w-16 h-16 bg-[#39C93D] rounded-full flex items-center justify-center mx-auto mb-4">

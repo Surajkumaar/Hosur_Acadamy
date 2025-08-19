@@ -16,11 +16,9 @@ const Footer = () => {
   ];
 
   const courses = [
+    'Foundation Mathematics',
     'JEE Main & Advanced',
     'NEET Preparation',
-    'Foundation Mathematics',
-    'Science Olympiad',
-    'English Literature',
     'Board Exam Preparation',
   ];
 
@@ -44,8 +42,12 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">E</span>
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center overflow-hidden bg-white p-1">
+                <img 
+                  src="/sub.png" 
+                  alt={mockData.institute.name} 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h3 className="text-xl font-bold">{mockData.institute.name}</h3>
@@ -61,9 +63,6 @@ const Footer = () => {
               </a>
               <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Instagram className="h-4 w-4" />
-              </a>
-              <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
-                <Twitter className="h-4 w-4" />
               </a>
               <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Youtube className="h-4 w-4" />

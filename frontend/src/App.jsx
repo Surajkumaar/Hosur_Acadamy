@@ -22,6 +22,7 @@ import ManageResults from "./pages/ManageResults";
 import StudentDashboard from "./pages/StudentDashboard";
 import TestStudentLogin from "./pages/TestStudentLogin";
 import SessionTest from "./pages/SessionTest";
+import AdminSetup from "./pages/AdminSetup";
 import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
                 <Route path="/firebase-test" element={<FirebaseTest />} />
                 <Route path="/firebase-setup" element={<FirebaseSetup />} />
                 <Route path="/firebase-debug" element={<FirebaseDebug />} />
+                <Route path="/admin-setup" element={<AdminSetup />} />
                 <Route path="/test-student-login" element={<TestStudentLogin />} />
                 <Route 
                   path="/session-test" 

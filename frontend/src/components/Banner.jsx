@@ -20,7 +20,7 @@ const Banner = () => {
       setCurrent(emblaApi.selectedScrollSnap());
     });
 
-    const autoplay = setInterval(scrollNext, 5000);
+    const autoplay = setInterval(scrollNext, 10000);
 
     // Cleanup function
     return () => {
@@ -30,31 +30,31 @@ const Banner = () => {
   }, [emblaApi, scrollNext]);
 
   const banners = [
-    {
-      id: 1,
-      imageUrl: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1200&h=400&fit=crop",
-      title: "Early Bird Registration Open!",
-      description: "Get 20% off on all JEE and NEET courses. Limited time offer.",
-      buttonText: "Register Now",
-      buttonLink: "/courses"
-    },
-    {
-      id: 2,
-      imageUrl: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&h=400&fit=crop",
-      title: "New Batch Starting Soon",
-      description: "Join our comprehensive JEE/NEET preparation program. Expert faculty, proven results.",
-      buttonText: "Learn More",
-      buttonLink: "/courses"
-    },
-    {
-      id: 3,
-      imageUrl: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&h=400&fit=crop",
-      title: "Scholarship Test Announcement",
-      description: "Take our scholarship test and get up to 100% fee waiver. Create your success story with us.",
-      buttonText: "Apply Now",
-      buttonLink: "/scholarship"
-    }
-  ];
+  {
+    id: 1,
+    imageUrl: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1200&h=400&fit=crop",
+    title: "Now Launching: JEE & NEET Programs!",
+    description: "Building on 23 years of foundation excellence, we now offer specialized coaching for top engineering and medical entrance exams.",
+    buttonText: "Explore New Courses",
+    buttonLink: "/courses"
+  },
+  {
+    id: 2,
+    imageUrl: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&h=400&fit=crop",
+    title: "Celebrating Our Students' Success!",
+    description: "With a 100% success rate and top scores, see how our students achieve their dreams. Your success story could be next.",
+    buttonText: "View Our Achievers",
+    buttonLink: "/toppers"
+  },
+  {
+    id: 3,
+    imageUrl: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&h=400&fit=crop",
+    title: "Admissions Open for 2025-26",
+    description: "Your journey to success starts here. Join our proven foundation and new competitive exam courses today. Seats are filling fast!",
+    buttonText: "Enroll Now",
+    buttonLink: "/contact"
+  }
+];
 
   return (
     <div className="w-full mb-8 relative">
