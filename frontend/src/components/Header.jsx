@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, X, Phone, MessageCircle, LogIn, LogOut, User } from 'lucide-react';
+import { ChevronDown, MessageCircle, LogIn, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { mockData } from './mock/mockData';
 import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,10 +46,6 @@ const Header = () => {
     }
   };
 
-  const handleCall = () => {
-    window.open(`tel:${mockData.institute.phone}`, '_self');
-  };
-
   const handleWhatsApp = () => {
     const message = encodeURIComponent("Hello! I'm interested in learning more about your courses.");
     window.open(`https://wa.me/${mockData.institute.whatsapp.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
@@ -80,25 +75,25 @@ const Header = () => {
       {/* Main Header */}
       <header className={`fixed top-0 left-0 right-0 z-40 bg-white shadow-md transition-all duration-300 ${isScrolled ? 'shadow-lg' : ''}`}>
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-2 md:py-3">
             {/* Logo and Brand with Dropdown */}
-            <div className="relative">
+            <div className="relative flex-1 min-w-0">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-50 transition-colors w-full max-w-xs"
               >
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 bg-white border border-gray-200 shadow-sm p-0.5">
                   <img 
                     src="/sub.png" 
                     alt={mockData.institute.name} 
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <div>
-                  <h1 className="text-xl font-bold text-[#002357]">{mockData.institute.name}</h1>
-                  <p className="text-sm text-gray-600">{mockData.institute.tagline}</p>
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-xs md:text-lg font-bold text-[#002357] leading-tight">{mockData.institute.name}</h1>
+                  <p className="text-xs text-gray-600 truncate hidden md:block">{mockData.institute.tagline}</p>
                 </div>
-                <ChevronDown className={`h-5 w-5 text-[#0052CC] transition-transform duration-200 ${isMenuOpen ? 'transform rotate-180' : ''}`} />
+                <ChevronDown className={`h-3 w-3 md:h-4 md:w-4 text-[#0052CC] transition-transform duration-200 flex-shrink-0 ${isMenuOpen ? 'transform rotate-180' : ''}`} />
               </button>
 
               {/* Dropdown Menu */}
@@ -120,7 +115,6 @@ const Header = () => {
                               : 'text-gray-800 hover:bg-gray-50 hover:text-[#0052CC] transform hover:scale-105'
                           }`}
                         >
-                          {/* You can add icons here if you have them */}
                           <span>{item.name}</span>
                         </Link>
                       ))}
@@ -139,7 +133,6 @@ const Header = () => {
                                 : 'text-gray-700 hover:bg-gray-50'
                             }`}
                           >
-                            {/* You can add icons here if you have them */}
                             <span>{item.name}</span>
                           </Link>
                         ))}
@@ -155,159 +148,45 @@ const Header = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="hidden md:flex items-center space-x-3">
-              <Button 
-                onClick={handleCall}
-                variant="outline" 
-                className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-colors"
-              >
-                <Phone className="h-4 w-4 mr-2" />
-                <span className="hidden lg:inline">Call Now</span>
-                <Phone className="h-4 w-4 lg:hidden" />
-              </Button>
+            <div className="flex items-center space-x-1 md:space-x-2 flex-shrink-0">
               <Button 
                 onClick={handleEnrollClick}
-                className="bg-[#39C93D] hover:bg-[#2db832] text-white transition-colors"
+                size="sm"
+                className="bg-[#39C93D] hover:bg-[#2db832] text-white transition-colors px-2 md:px-3 py-1"
               >
-                <span className="hidden lg:inline">Enroll Now</span>
-                <span className="lg:hidden">Enroll</span>
+                <span className="text-xs">Enroll</span>
               </Button>
               {isAuthenticated ? (
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600 hidden xl:block">
+                <div className="flex items-center space-x-1">
+                  <span className="text-xs text-gray-600 hidden lg:block max-w-16 truncate">
                     {userProfile?.email || currentUser?.email || 'User'}
                   </span>
                   <Button 
                     onClick={handleLogout}
                     variant="outline"
-                    className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                    size="sm"
+                    className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors px-2 md:px-3 py-1"
                   >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    <span className="hidden lg:inline">Logout</span>
+                    <LogOut className="h-3 w-3" />
+                    <span className="hidden md:inline ml-1 text-xs">Logout</span>
                   </Button>
                 </div>
               ) : (
                 <Link to="/login">
                   <Button 
                     variant="outline"
-                    className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-colors"
+                    size="sm"
+                    className="border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white transition-colors px-2 md:px-3 py-1"
                   >
-                    <LogIn className="h-4 w-4 mr-2" />
-                    <span className="hidden lg:inline">Login</span>
+                    <LogIn className="h-3 w-3" />
+                    <span className="hidden md:inline ml-1 text-xs">Login</span>
                   </Button>
                 </Link>
               )}
             </div>
-
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <Button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                variant="outline"
-                size="sm"
-                className="border-[#0052CC] text-[#0052CC]"
-              >
-                <div className="flex flex-col space-y-1">
-                  <div className="w-4 h-0.5 bg-current"></div>
-                  <div className="w-4 h-0.5 bg-current"></div>
-                  <div className="w-4 h-0.5 bg-current"></div>
-                </div>
-              </Button>
-            </div>
           </div>
         </div>
       </header>
-
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}></div>
-          <div className="fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-[#002357]">Menu</h2>
-                <Button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  variant="ghost"
-                  size="sm"
-                >
-                  <X className="h-6 w-6" />
-                </Button>
-              </div>
-              
-              {/* Mobile Navigation */}
-              <div className="space-y-2 mb-6">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                      location.pathname === item.path
-                        ? 'bg-[#0052CC] text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-
-              {/* Mobile Action Buttons */}
-              <div className="space-y-3 border-t pt-6">
-                <Button 
-                  onClick={() => {
-                    handleCall();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  variant="outline" 
-                  className="w-full border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white"
-                >
-                  <Phone className="h-4 w-4 mr-2" />
-                  Call Now
-                </Button>
-                <Button 
-                  onClick={() => {
-                    handleEnrollClick();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="w-full bg-[#39C93D] hover:bg-[#2db832] text-white"
-                >
-                  Enroll Now
-                </Button>
-                {isAuthenticated ? (
-                  <div className="space-y-3">
-                    <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">
-                      {userProfile?.email || currentUser?.email || 'User'}
-                    </div>
-                    <Button 
-                      onClick={() => {
-                        handleLogout();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      variant="outline"
-                      className="w-full border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Logout
-                    </Button>
-                  </div>
-                ) : (
-                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button 
-                      variant="outline"
-                      className="w-full border-[#0052CC] text-[#0052CC] hover:bg-[#0052CC] hover:text-white"
-                    >
-                      <LogIn className="h-4 w-4 mr-2" />
-                      Login
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* WhatsApp Floating Button */}
       <button

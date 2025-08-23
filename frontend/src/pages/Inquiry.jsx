@@ -179,11 +179,7 @@ const Inquiry = () => {
               >
                 Return to Home
               </Button>
-              <div className="flex justify-center space-x-4">
-                <Button variant="outline" onClick={handleCall} size="sm">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Call Now
-                </Button>
+              <div className="flex justify-center">
                 <Button variant="outline" onClick={handleWhatsApp} size="sm">
                   <MessageSquare className="h-4 w-4 mr-2" />
                   WhatsApp
@@ -428,14 +424,6 @@ const Inquiry = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button
-                    onClick={handleCall}
-                    className="w-full bg-[#0052CC] hover:bg-[#0041a3] text-white py-3 text-lg font-semibold transition-colors"
-                  >
-                    <Phone className="h-5 w-5 mr-2" />
-                    Call Now
-                  </Button>
-                  
                   <Button
                     onClick={handleWhatsApp}
                     className="w-full bg-[#25D366] hover:bg-[#20c058] text-white py-3 text-lg font-semibold transition-colors"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, Users, Target, Award, BookOpen, Heart, Star } from 'lucide-react';
+import { CheckCircle, Users, Target, Award, BookOpen, Heart, Star, Mail, Phone, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { mockData } from '../components/mock/mockData';
@@ -159,35 +159,33 @@ const About = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: "faculty 1",
-                subject: "Mathematics & JEE",
-                experience: "15+ years",
-                // image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
-                qualifications: "Ph.D. Mathematics, IIT Delhi"
-              },
-              {
-                name: "faculty 2",
-                subject: "Physics & NEET",
-                experience: "12+ years",
-                // image: "https://images.unsplash.com/photo-1494790108755-2616b332fafe?w=300&h=300&fit=crop&crop=face",
-                qualifications: "Ph.D. Physics, IISc Bangalore"
-              },
-              {
-                name: "faculty 3",
-                subject: "Chemistry & Olympiad",
-                experience: "18+ years",
-                // image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
-                qualifications: "M.Sc. Chemistry, IIT Bombay"
-              }
+      name: "R. Sindhuja Rajan",
+      subject: "Math & Physics",
+      experience: "15+ years",
+      image: "https://images.unsplash.com/photo-1580894908361-967195033215?w=300&h=300&fit=crop&crop=face",
+      qualifications: "MSc. B.ed"
+    },
+    {
+      name: "Sir Jeevanatham",
+      subject: "Chemistry",
+      experience: "12+ years",
+      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face",
+      qualifications: "Senior Chemistry Faculty"
+    },
+    {
+      name: "Kaviya",
+      subject: "Math & Science",
+      experience: "18+ years",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&fit=crop&crop=face",
+      qualifications: "Foundation Course Expert"
+    }
             ].map((faculty, index) => (
               <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
                 <CardContent className="p-8 text-center">
                   <div className="relative mb-6">
-                    <img
-                      src={faculty.image}
-                      alt={faculty.name}
-                      className="w-24 h-24 rounded-full mx-auto object-cover"
-                    />
+                    <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-[#0052CC] to-[#39C93D] flex items-center justify-center">
+                      <User className="h-12 w-12 text-white" />
+                    </div>
                     <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#39C93D] rounded-full flex items-center justify-center">
                       <CheckCircle className="h-4 w-4 text-white" />
                     </div>
@@ -252,64 +250,30 @@ const About = () => {
                       <div className="text-2xl font-bold text-[#39C93D] mb-2">2012</div>
                       <h3 className="text-xl font-semibold text-[#002357] mb-3">First Major Success</h3>
                       <p className="text-gray-600">
-                        Achieved our first major milestone with 50+ students clearing JEE and NEET with top ranks.
+                        Achieved our first major milestone with 50+ students clearing Board Exams withtop ranks.
                       </p>
                     </div>
                   </div>
-                </div>
-
-                {/* 2015 - Expansion */}
-                <div className="relative flex items-center">
-                  <div className="w-1/2 pr-8 text-right">
-                    <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-[#0052CC]">
-                      <div className="text-2xl font-bold text-[#0052CC] mb-2">2015</div>
-                      <h3 className="text-xl font-semibold text-[#002357] mb-3">Multi-Branch Expansion</h3>
-                      <p className="text-gray-600">
-                        Expanded to multiple locations across the city, reaching over 1000 students annually.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-[#0052CC] rounded-full flex items-center justify-center">
-                    <CheckCircle className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="w-1/2 pl-8"></div>
                 </div>
 
                 {/* 2018 - Digital Integration */}
                 <div className="relative flex items-center">
-                  <div className="w-1/2 pr-8"></div>
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-[#39C93D] rounded-full flex items-center justify-center">
-                    <CheckCircle className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="w-1/2 pl-8">
-                    <div className="bg-white p-6 rounded-lg shadow-lg border-r-4 border-[#39C93D]">
-                      <div className="text-2xl font-bold text-[#39C93D] mb-2">2018</div>
+                  <div className="w-1/2 pr-8 text-right">
+                    <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-[#0052CC]">
+                      <div className="text-2xl font-bold text-[#0052CC] mb-2">2018</div>
                       <h3 className="text-xl font-semibold text-[#002357] mb-3">Digital Integration</h3>
                       <p className="text-gray-600">
                         Launched online learning platform with interactive classes and digital study materials.
                       </p>
                     </div>
                   </div>
-                </div>
-
-                {/* 2020 - Technology Upgrade */}
-                <div className="relative flex items-center">
-                  <div className="w-1/2 pr-8 text-right">
-                    <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-[#0052CC]">
-                      <div className="text-2xl font-bold text-[#0052CC] mb-2">2020</div>
-                      <h3 className="text-xl font-semibold text-[#002357] mb-3">Technology Upgrade</h3>
-                      <p className="text-gray-600">
-                        Revolutionized learning with AI-powered personalized study plans and virtual labs.
-                      </p>
-                    </div>
-                  </div>
                   <div className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-[#0052CC] rounded-full flex items-center justify-center">
                     <CheckCircle className="h-6 w-6 text-white" />
                   </div>
                   <div className="w-1/2 pl-8"></div>
                 </div>
 
-                {/* 2023 - 5000+ Students */}
+                {/* 2023 - 1000+ Students */}
                 <div className="relative flex items-center">
                   <div className="w-1/2 pr-8"></div>
                   <div className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-[#39C93D] rounded-full flex items-center justify-center">
@@ -318,9 +282,9 @@ const About = () => {
                   <div className="w-1/2 pl-8">
                     <div className="bg-white p-6 rounded-lg shadow-lg border-r-4 border-[#39C93D]">
                       <div className="text-2xl font-bold text-[#39C93D] mb-2">2023</div>
-                      <h3 className="text-xl font-semibold text-[#002357] mb-3">5000+ Students Milestone</h3>
+                      <h3 className="text-xl font-semibold text-[#002357] mb-3">1000+ Students Milestone</h3>
                       <p className="text-gray-600">
-                        Reached 5000+ enrolled students with 95% success rate across all competitive exams.
+                        Reached 1000+ enrolled students with 95% success rate across all competitive exams.
                       </p>
                     </div>
                   </div>

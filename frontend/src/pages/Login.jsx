@@ -155,9 +155,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex mt-16"> {/* Added mt-16 for top margin to clear header */}
+    <div className="h-screen flex overflow-hidden"> 
       {/* Left Section with Image and Text */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[#13ad89] text-white p-12 flex-col justify-center">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0052CC] via-[#002357] to-[#0052CC] text-white p-12 flex-col justify-center">
         <div className="max-w-md mx-auto">
           <h1 className="text-4xl font-bold mb-6">Let's Grow Up Your Future With Hosur Academy</h1>
           <p className="text-lg mb-4">Learn important new skills, discover passions</p>
@@ -170,8 +170,12 @@ const Login = () => {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-12 text-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-lg flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">H</span>
+            <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center mx-auto mb-4 p-2 shadow-lg">
+              <img 
+                src="/sub.png" 
+                alt="Hosur Academy" 
+                className="w-full h-full object-contain"
+              />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Sign in to your account</h2>
           </div>
@@ -193,7 +197,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#13ad89] focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:border-transparent"
                 placeholder="name@example.com"
                 value={formData.email}
                 onChange={handleChange}
@@ -210,7 +214,7 @@ const Login = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#13ad89] focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0052CC] focus:border-transparent"
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
@@ -234,7 +238,7 @@ const Login = () => {
 
             <Button
               type="submit"
-              className="w-full bg-[#13ad89] hover:bg-[#0f8c6d] text-white py-3 rounded-lg transition-colors"
+              className="w-full bg-[#0052CC] hover:bg-[#002357] text-white py-3 rounded-lg transition-colors"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}

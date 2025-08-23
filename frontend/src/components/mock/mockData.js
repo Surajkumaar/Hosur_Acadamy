@@ -91,7 +91,7 @@ courses: [
     {
       id: 3,
       name: "Dr. Sri Raksha",
-      exam: "Alumna",
+      exam: "Alumni",
       rank: "Successful Doctor",
       score: "",
       course: "Alumni - Medical Field",
@@ -103,37 +103,100 @@ courses: [
   gallery: [ // Kept from mock data as no new images were provided
     {
       id: 1,
-      title: "Interactive Classroom Session",
-      category: "classroom",
-      image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=400&h=300&fit=crop",
-      description: "Students actively participating in a physics demonstration"
+      title: "Alumni Success",
+      category: "Alumni",
+      image: "/classroom5.jpg",
+      description: "Inspiring Journeys Beyond the Campus"
     },
     {
       id: 2,
-      title: "Well-Equipped Facilities",
-      category: "facility",
-      image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop",
-      description: "Well-furnished classrooms with AV support and CCTV for a safe learning environment."
+      title: "Alumni Success",
+      category: "Alumni",
+      image: "/classroom6.jpg",
+      description: "Inspiring Journeys Beyond the Campus"
     },
     {
       id: 3,
-      title: "Annual Achievement Ceremony",
-      category: "events",
-      image: "https://images.unsplash.com/photo-1511376777868-611b54f68947?w=400&h=300&fit=crop",
-      description: "Celebrating our students' outstanding achievements"
+      title: "Interactive Learning Space",
+      category: "classroom",
+      image: "/classroom7.jpg",
+      description: "Technology-enhanced classroom for interactive sessions"
+    },
+    {
+      id: 4,
+      title: "Interactive Learning Space",
+      category: "classroom",
+      image: "/classroom8.jpg",
+      description: "Technology-enhanced classroom for interactive sessions"
+    },
+    {
+      id: 5,
+      title: "Mathematics Center",
+      category: "classroom",
+      image: "/classroom9.jpg",
+      description: "Dedicated space for mathematics and problem-solving"
+    },
+    {
+      id: 6,
+      title: "Interactive Learning Space",
+      category: "classroom",
+      image: "/classroom10.jpg",
+      description: "Technology-enhanced classroom for interactive sessions"
+    },
+    {
+      id: 7,
+      title: "Interactive Learning Space",
+      category: "classroom",
+      image: "/classroom11.jpg",
+      description: "Technology-enhanced classroom for interactive sessions"
+    },
+    {
+      id: 8,
+      title: "Student Activity Center",
+      category: "classroom",
+      image: "/classroom12.jpg",
+      description: "Multi-purpose hall for student activities and events"
+    },
+    {
+      id: 9,
+      title: "Library & Reading Room",
+      category: "classroom",
+      image: "/classroom13.jpg",
+      description: "Quiet study environment with extensive resources"
+    },
+    {
+      id: 10,
+      title: "Computer Lab",
+      category: "classroom",
+      image: "/classroom14.jpg",
+      description: "Modern computer laboratory for digital learning"
+    },
+    {
+      id: 11,
+      title: "Conference Hall",
+      category: "classroom",
+      image: "/classroom15.jpg",
+      description: "Professional meeting space for academic discussions"
+    },
+    {
+      id: 12,
+      title: "Innovation Hub",
+      category: "classroom",
+      image: "/classroom16.jpg",
+      description: "Creative workspace for projects and innovations"
     }
   ],
   
   stats: {
-    studentsEnrolled: "25-30 per batch",
+    studentsEnrolled: "23+ Years",
     successRate: "100%",
     experienceYears: "23+", // Calculated from establishment year 2002
     facultyCount: "3 Core Experts"
   },
   
   about: {
-    vision: "To be a premier institution for transforming aspiring students into top achievers. We envision a future of excellence for our kids.",
-    mission: "To empower students with excellence in education.",
+    vision: "To be a pioneering educational institution that is nationally recognized for academic excellence and for nurturing the next generation of leaders, innovators, and thinkers. We envision a future where our students are empowered to not only achieve their highest potential but also to make a meaningful impact on a global stage.",
+    mission: "Our mission is to provide a transformative learning experience by building a robust conceptual foundation through personalized mentorship and innovative pedagogy. We are committed to fostering a dynamic and intellectually stimulating environment that utilizes activity-based learning, STEM integration, and a holistic approach to education, thereby equipping every student with the skills, confidence, and knowledge to excel in competitive examinations and beyond.",
     methodology: [
       {
         title: "Activity-Based Learning",

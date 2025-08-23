@@ -307,7 +307,7 @@ const Home = () => {
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-[#39C93D]">{stats.studentsEnrolled}</div>
-                    <div className="text-sm text-gray-200">Students Enrolled</div>
+                    <div className="text-sm text-gray-200">Experience</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-[#39C93D]">{stats.successRate}</div>
@@ -327,13 +327,19 @@ const Home = () => {
       </section>
 
       {/* Course Tabs Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
+      <section className="py-16 relative bg-gray-50" style={{
+        backgroundImage: 'url("/classroom4.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
+        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#002357] mb-4">
-              Choose Your Path to Success
+            <h2 className="text-3xl font-bold text-white mb-4">
+               Choose your Path to Success
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-white font-bold max-w-2xl mx-auto">
               Explore our comprehensive courses designed for different competitive exams
             </p>
           </div>
@@ -519,7 +525,7 @@ const Home = () => {
       </section>
 
       {/* Inquiry Form Section */}
-      <section id="inquiry-form" className="py-16 bg-gray-50">
+      <section id="inquiry-form" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-[#002357] mb-4">
@@ -542,11 +548,7 @@ const Home = () => {
                       </div>
                       <h3 className="text-xl font-bold text-[#002357] mb-2">Thank You!</h3>
                       <p className="text-gray-600 mb-6">Your inquiry has been submitted successfully. Our team will contact you within 24 hours.</p>
-                      <div className="flex justify-center space-x-4">
-                        <Button variant="outline" onClick={handleCall} size="sm">
-                          <Phone className="h-4 w-4 mr-2" />
-                          Call Now
-                        </Button>
+                      <div className="flex justify-center">
                         <Button variant="outline" onClick={handleWhatsApp} size="sm">
                           <MessageSquare className="h-4 w-4 mr-2" />
                           WhatsApp

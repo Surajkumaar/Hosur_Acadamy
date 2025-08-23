@@ -61,10 +61,10 @@ const Footer = () => {
               <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
+              <a href="https://www.instagram.com/hosurtopperss?igsh=MTh0cGZhcTZ0Mm13MQ==" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
+              <a href="https://youtube.com/@sindhujarajan5055?si=Ohr8TQFHqC3jXqsV" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Youtube className="h-4 w-4" />
               </a>
             </div>

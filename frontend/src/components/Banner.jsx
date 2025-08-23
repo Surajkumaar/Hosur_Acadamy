@@ -12,6 +12,18 @@ const Banner = () => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  const handleEnrollClick = (e) => {
+    e.preventDefault();
+    const inquirySection = document.getElementById('inquiry-form');
+    if (inquirySection) {
+      inquirySection.scrollIntoView({ behavior: 'smooth' });
+    }
+    localStorage.setItem('enrollmentIntent', JSON.stringify({
+      timestamp: new Date().toISOString(),
+      source: 'banner_cta'
+    }));
+  };
+
   // Auto-play functionality with proper cleanup
   useEffect(() => {
     if (!emblaApi) return;
@@ -32,15 +44,15 @@ const Banner = () => {
   const banners = [
   {
     id: 1,
-    imageUrl: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1200&h=400&fit=crop",
+    imageUrl: "/classroom1.jpg",
     title: "Now Launching: JEE & NEET Programs!",
     description: "Building on 23 years of foundation excellence, we now offer specialized coaching for top engineering and medical entrance exams.",
-    buttonText: "Explore New Courses",
+    buttonText: "Explore Now",
     buttonLink: "/courses"
   },
   {
     id: 2,
-    imageUrl: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&h=400&fit=crop",
+    imageUrl: "/classroom2.jpg",
     title: "Celebrating Our Students' Success!",
     description: "With a 100% success rate and top scores, see how our students achieve their dreams. Your success story could be next.",
     buttonText: "View Our Achievers",
@@ -48,7 +60,7 @@ const Banner = () => {
   },
   {
     id: 3,
-    imageUrl: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&h=400&fit=crop",
+    imageUrl: "/classroom3.jpg",
     title: "Admissions Open for 2025-26",
     description: "Your journey to success starts here. Join our proven foundation and new competitive exam courses today. Seats are filling fast!",
     buttonText: "Enroll Now",
@@ -77,12 +89,21 @@ const Banner = () => {
                     <p className="text-xl md:text-2xl mb-8 animate-slideUp">
                       {banner.description}
                     </p>
-                    <a
-                      href={banner.buttonLink}
-                      className="inline-block bg-[#39C93D] hover:bg-[#2db832] text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 animate-scaleIn"
-                    >
-                      {banner.buttonText}
-                    </a>
+                    {banner.buttonText === "Enroll Now" ? (
+                      <button
+                        onClick={handleEnrollClick}
+                        className="inline-block bg-[#39C93D] hover:bg-[#2db832] text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 animate-scaleIn"
+                      >
+                        {banner.buttonText}
+                      </button>
+                    ) : (
+                      <a
+                        href={banner.buttonLink}
+                        className="inline-block bg-[#39C93D] hover:bg-[#2db832] text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 animate-scaleIn"
+                      >
+                        {banner.buttonText}
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

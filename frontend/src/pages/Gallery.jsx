@@ -1,33 +1,15 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Filter, Image as ImageIcon, Play, Calendar, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { Image as ImageIcon, Eye } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
 import { mockData } from '../components/mock/mockData';
 
 const Gallery = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const gallery = mockData.gallery;
-
-  // Get unique categories for filters
-  const categories = [...new Set(gallery.map(item => item.category))];
-
-  // Filter gallery items
-  const filteredGallery = useMemo(() => {
-    return gallery.filter(item => {
-      const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          item.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
-      
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchTerm, selectedCategory, gallery]);
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
@@ -104,73 +86,18 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section className="py-8 bg-gray-50 border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search gallery..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-gray-600" />
-                <span className="text-sm text-gray-600">Filter by:</span>
-              </div>
-              
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map(category => (
-                    <SelectItem key={category} value={category}>
-                      {getCategoryIcon(category)} {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
-            <span>Showing {filteredGallery.length} of {gallery.length} images</span>
-            {(searchTerm || selectedCategory !== 'all') && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSearchTerm('');
-                  setSelectedCategory('all');
-                }}
-                className="text-[#0052CC] hover:text-[#0041a3]"
-              >
-                Clear Filters
-              </Button>
-            )}
-          </div>
-        </div>
-      </section>
-
       {/* Gallery Grid */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          {filteredGallery.length === 0 ? (
+          {gallery.length === 0 ? (
             <div className="text-center py-16">
               <ImageIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">No images found</h3>
-              <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+              <p className="text-gray-600">Gallery content will be available soon</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredGallery.map((item) => (
+              {gallery.map((item) => (
                 <div 
                   key={item.id} 
                   className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
@@ -201,30 +128,6 @@ const Gallery = () => {
               ))}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#0052CC] mb-2">500+</div>
-              <div className="text-gray-600">Photos Captured</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#0052CC] mb-2">50+</div>
-              <div className="text-gray-600">Events Covered</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#0052CC] mb-2">100+</div>
-              <div className="text-gray-600">Achievement Moments</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#0052CC] mb-2">20+</div>
-              <div className="text-gray-600">Facilities Showcased</div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -274,7 +177,7 @@ const Gallery = () => {
             <Button 
               size="lg" 
               className="bg-white text-[#0052CC] hover:bg-gray-100 px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
-              onClick={() => window.location.href = '/inquiry'}
+              onClick={() => window.location.href = '/#inquiry-form'}
             >
               Join Us Today
             </Button>
