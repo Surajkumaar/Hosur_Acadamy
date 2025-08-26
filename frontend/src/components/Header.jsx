@@ -82,7 +82,7 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-50 transition-colors w-full max-w-xs"
               >
-                <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 bg-white border border-gray-200 shadow-sm p-0.5">
+                <div className="w-7 h-7 md:w-9 md:h-9 flex items-center justify-center overflow-hidden flex-shrink-0">
                   <img 
                     src="/sub.png" 
                     alt={mockData.institute.name} 
@@ -91,7 +91,7 @@ const Header = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h1 className="text-xs md:text-lg font-bold text-[#002357] leading-tight">{mockData.institute.name}</h1>
-                  <p className="text-xs text-gray-600 truncate hidden md:block">{mockData.institute.tagline}</p>
+                  <p className="text-xs text-gray-600 truncate">{mockData.institute.tagline}</p>
                 </div>
                 <ChevronDown className={`h-3 w-3 md:h-4 md:w-4 text-[#0052CC] transition-transform duration-200 flex-shrink-0 ${isMenuOpen ? 'transform rotate-180' : ''}`} />
               </button>

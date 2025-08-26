@@ -1,4 +1,4 @@
-// Updated mock data for Hosur Toppers Academy based on questionnaire responses
+// Updated mockData for Hosur Toppers Academy based on questionnaire responses
 export const mockData = {
   institute: {
     name: "Hosur Toppers Academy",
@@ -12,19 +12,17 @@ export const mockData = {
 courses: [
   {
     id: 1,
-    title: "Foundation Courses (Classes 9 & 10)",
-    description: "We focus on coaching basic concepts clearly to build a strong base in Physics, Chemistry, and Math for our students.",
-    grade: "9th-10th",
-    subject: "Physics, Chemistry, Mathematics",
-    duration: "1 Year",
-    image: "https://images.unsplash.com/photo-1635372722656-389f87a941b7?w=400&h=300&fit=crop",
-    features: ["Activity-Based Teaching", "Regular Worksheets & Quizzes", "Personalized Attention", "Parent Meetings"]
+    title: "Foundation Courses (Classes 9 & 10)",
+    description: "We focus on coaching basic concepts clearly to build a strong base in Physics, Chemistry, and Math for our students.",
+    subject: "Physics, Chemistry, Mathematics",
+    duration: "1 Year",
+    image: "https://images.unsplash.com/photo-1635372722656-389f87a941b7?w=400&h=300&fit=crop",
+    features: ["Activity-Based Teaching", "Regular Worksheets & Quizzes", "Personalized Attention", "Parent Meetings"]
   },
   {
     id: 2,
     title: "Senior Secondary (Classes 11 & 12)",
     description: "Specialized coaching in Physics, Chemistry, and Math covering the complete syllabus for both CBSE and ICSE boards.",
-    grade: "11th-12th",
     subject: "Physics, Chemistry, Mathematics",
     duration: "1-2 Years",
     image: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=400&h=300&fit=crop",
@@ -32,17 +30,14 @@ courses: [
   },
   {
     id: 3,
-    title: "NEET & JEE Preparation",
+    title: "NEET & JEE coaching",
     description: "Launching our new program for medical and engineering aspirants, built upon our 23 years of foundation course excellence.",
-    grade: "11th-12th",
     subject: "Physics, Chemistry, Math & Biology",
     duration: "1-2 Years",
-    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=300&fit=crop",
     features: ["Expert Faculty", "Comprehensive Mock Tests", "Doubt Clearing Sessions", "Updated Study Material"]
-  }
-],
-  
-  testimonials: [
+  }
+],  testimonials: [
     {
       id: 1,
       name: "Dr. Yamanth",

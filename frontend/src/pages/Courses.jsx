@@ -46,7 +46,8 @@ const Courses = () => {
       courseName: course.title,
       timestamp: new Date().toISOString()
     }));
-    window.location.href = '/inquiry';
+    // Navigate to home page and scroll to inquiry form
+    window.location.href = '/#inquiry-form';
   };
 
   if (loading) {
@@ -97,11 +98,6 @@ const Courses = () => {
                       alt={course.title}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                     />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-[#39C93D] text-white">
-                        {course.grade}
-                      </Badge>
-                    </div>
                   </div>
                   
                   <CardHeader className="pb-2">
@@ -128,6 +124,16 @@ const Courses = () => {
                           </Badge>
                         ))}
                       </div>
+                    </div>
+                    
+                    <div className="pt-4">
+                      <Button 
+                        onClick={() => handleEnrollClick(course)}
+                        className="w-full bg-[#39C93D] hover:bg-[#2db832] text-white"
+                      >
+                        <ArrowRight className="h-4 w-4 mr-2" />
+                        Enroll Now
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

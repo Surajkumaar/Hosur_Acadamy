@@ -246,7 +246,7 @@ const Home = () => {
     neet: {
       title: "NEET Preparation",
       description: "Complete medical entrance exam preparation with specialized coaching and practice tests",
-      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop",
       features: ["Expert Faculty", "Practice Tests", "Performance Analysis", "Study Notes"],
       successRate: "92%",
       toppers: "180+"
@@ -267,7 +267,7 @@ const Home = () => {
               <div className="space-y-4">
                 {/* Logo */}
                 <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center p-2">
+                  <div className="w-16 h-16 flex items-center justify-center">
                     <img 
                       src="/sub.png" 
                       alt={mockData.institute.name} 
