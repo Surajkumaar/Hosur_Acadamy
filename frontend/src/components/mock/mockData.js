@@ -88,7 +88,7 @@ courses: [
       name: "Dr. Sri Raksha",
       exam: "Alumni",
       rank: "Successful Doctor",
-      score: "",
+      score: "MBBS Graduate",
       course: "Alumni - Medical Field",
       image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
       testimonial: "The foundation I received at Hosur Toppers Academy was instrumental in my journey through medical school and beyond."
@@ -183,9 +183,9 @@ courses: [
   ],
   
   stats: {
-    studentsEnrolled: "23+ Years",
+    studentsEnrolled: "100+",
     successRate: "100%",
-    experienceYears: "23+", // Calculated from establishment year 2002
+    experienceYears: "25+", // Calculated from establishment year 2002
     facultyCount: "3 Core Experts"
   },
   

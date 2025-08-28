@@ -72,7 +72,7 @@ const Gallery = () => {
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
         <div className="relative container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge className="bg-[#39C93D] text-white px-4 py-2 text-sm font-medium mb-6">
+            <Badge className="bg-[#39C93D] text-white px-4 py-2 text-sm font-medium mb-6 hover:bg-[#39C93D] cursor-default">
               Our Gallery
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6">

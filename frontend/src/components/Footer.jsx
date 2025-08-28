@@ -12,7 +12,7 @@ const Footer = () => {
     { name: 'Courses', path: '/courses' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'Toppers', path: '/toppers' },
-    { name: 'Contact', path: '/inquiry' },
+    { name: 'Contact', path: '/#inquiry-form' },
   ];
 
   const courses = [
@@ -33,6 +33,42 @@ const Footer = () => {
   const handleWhatsApp = () => {
     const message = encodeURIComponent("Hello! I'm interested in learning more about your courses.");
     window.open(`https://wa.me/${mockData.institute.whatsapp.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
+  };
+
+  const handleQuickLinkClick = (path, linkName) => {
+    if (linkName === 'Contact') {
+      // Special handling for Contact link - scroll to inquiry form
+      if (window.location.pathname === '/') {
+        // If already on home page, just scroll to the inquiry form
+        const inquirySection = document.getElementById('inquiry-form');
+        if (inquirySection) {
+          inquirySection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      } else {
+        // If not on home page, navigate to home and then scroll
+        window.location.href = '/#inquiry-form';
+      }
+    } else {
+      // For other links, scroll to top smoothly
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      
+      // Small delay to ensure smooth scroll starts before navigation
+      setTimeout(() => {
+        if (path.startsWith('/#')) {
+          // Handle hash links
+          window.location.href = path;
+        } else {
+          // Handle regular routes
+          window.location.href = path;
+        }
+      }, 100);
+    }
   };
 
   return (
@@ -58,11 +94,14 @@ const Footer = () => {
               Empowering students with quality education and comprehensive support to achieve their academic goals and build successful careers.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
+              <a href="https://www.facebook.com/profile.php?id=61578754012432" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Facebook className="h-4 w-4" />
               </a>
               <a href="https://www.instagram.com/hosurtopperss?igsh=MTh0cGZhcTZ0Mm13MQ==" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Instagram className="h-4 w-4" />
+              </a>
+              <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
+                <Twitter className="h-4 w-4" />
               </a>
               <a href="https://youtube.com/@sindhujarajan5055?si=Ohr8TQFHqC3jXqsV" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Youtube className="h-4 w-4" />
@@ -76,12 +115,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm"
+                  <button
+                    onClick={() => handleQuickLinkClick(link.path, link.name)}
+                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm text-left cursor-pointer"
                   >
                     {link.name}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -93,12 +132,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {courses.map((course) => (
                 <li key={course}>
-                  <Link
-                    to="/courses"
-                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm"
+                  <button
+                    onClick={() => handleQuickLinkClick('/courses', course)}
+                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm text-left cursor-pointer"
                   >
                     {course}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -154,15 +193,6 @@ const Footer = () => {
                   Terms of Service
                 </Link>
               </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-300 text-sm">Follow us:</span>
-              <button
-                onClick={handleWhatsApp}
-                className="bg-[#25D366] hover:bg-[#20c058] px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors"
-              >
-                WhatsApp Us
-              </button>
             </div>
           </div>
         </div>

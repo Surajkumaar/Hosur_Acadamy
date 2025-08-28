@@ -12,18 +12,94 @@ import { mockData } from '../components/mock/mockData';
 import { sendInquiryEmail, sendAutoReplyEmail } from '../lib/emailjs-service';
 import Banner from '../components/Banner';
 
+// Common country codes
+const countryCodes = [
+  { code: '+91', country: 'India', flag: '🇮🇳' },
+  { code: '+1', country: 'USA', flag: '🇺🇸' },
+  { code: '+44', country: 'UK', flag: '🇬🇧' },
+  { code: '+61', country: 'Australia', flag: '🇦🇺' },
+  { code: '+971', country: 'UAE', flag: '🇦🇪' },
+  { code: '+65', country: 'Singapore', flag: '🇸🇬' },
+  { code: '+60', country: 'Malaysia', flag: '🇲🇾' },
+  { code: '+49', country: 'Germany', flag: '🇩🇪' },
+  { code: '+33', country: 'France', flag: '🇫🇷' },
+  { code: '+81', country: 'Japan', flag: '🇯🇵' },
+  { code: '+86', country: 'China', flag: '🇨🇳' },
+  { code: '+7', country: 'Russia', flag: '🇷🇺' },
+  { code: '+55', country: 'Brazil', flag: '🇧🇷' },
+  { code: '+27', country: 'South Africa', flag: '🇿🇦' },
+  { code: '+966', country: 'Saudi Arabia', flag: '🇸🇦' },
+];
+
+// Phone validation function
+const validatePhoneNumber = (countryCode, phoneNumber) => {
+  // Remove all spaces, dashes, and parentheses
+  const cleanPhone = phoneNumber.replace(/[\s\-\(\)]/g, '');
+  
+  // Check if phone contains only digits
+  if (!/^\d+$/.test(cleanPhone)) {
+    return { valid: false, message: "Phone number should contain only digits" };
+  }
+  
+  // Country-specific validation rules
+  const phoneRules = {
+    '+91': { minLength: 10, maxLength: 10, name: 'India' }, // India: 10 digits
+    '+1': { minLength: 10, maxLength: 10, name: 'USA/Canada' }, // USA/Canada: 10 digits
+    '+44': { minLength: 10, maxLength: 11, name: 'UK' }, // UK: 10-11 digits
+    '+61': { minLength: 9, maxLength: 9, name: 'Australia' }, // Australia: 9 digits
+    '+971': { minLength: 9, maxLength: 9, name: 'UAE' }, // UAE: 9 digits
+    '+65': { minLength: 8, maxLength: 8, name: 'Singapore' }, // Singapore: 8 digits
+    '+60': { minLength: 9, maxLength: 10, name: 'Malaysia' }, // Malaysia: 9-10 digits
+    '+49': { minLength: 10, maxLength: 12, name: 'Germany' }, // Germany: 10-12 digits
+    '+33': { minLength: 9, maxLength: 9, name: 'France' }, // France: 9 digits
+    '+81': { minLength: 10, maxLength: 11, name: 'Japan' }, // Japan: 10-11 digits
+    '+86': { minLength: 11, maxLength: 11, name: 'China' }, // China: 11 digits
+    '+7': { minLength: 10, maxLength: 10, name: 'Russia' }, // Russia: 10 digits
+    '+55': { minLength: 10, maxLength: 11, name: 'Brazil' }, // Brazil: 10-11 digits
+    '+27': { minLength: 9, maxLength: 9, name: 'South Africa' }, // South Africa: 9 digits
+    '+966': { minLength: 9, maxLength: 9, name: 'Saudi Arabia' }, // Saudi Arabia: 9 digits
+  };
+  
+  const rule = phoneRules[countryCode];
+  if (!rule) {
+    // Default validation for unlisted countries
+    if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+      return { valid: false, message: "Phone number should be between 7-15 digits" };
+    }
+    return { valid: true, message: "" };
+  }
+  
+  if (cleanPhone.length < rule.minLength || cleanPhone.length > rule.maxLength) {
+    if (rule.minLength === rule.maxLength) {
+      return { 
+        valid: false, 
+        message: `${rule.name} phone numbers should be exactly ${rule.minLength} digits` 
+      };
+    } else {
+      return { 
+        valid: false, 
+        message: `${rule.name} phone numbers should be ${rule.minLength}-${rule.maxLength} digits` 
+      };
+    }
+  }
+  
+  return { valid: true, message: "" };
+};
+
 const Home = () => {
   const [activeTab, setActiveTab] = useState('foundation');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    countryCode: '+91', // Default to India
     course: '',
     grade: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [phoneValidationMessage, setPhoneValidationMessage] = useState('');
   const { toast } = useToast();
   const featuredCourses = mockData.courses.slice(0, 4);
   const testimonials = mockData.testimonials;
@@ -99,6 +175,16 @@ const Home = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Real-time phone validation
+    if (name === 'phone') {
+      if (value.trim() === '') {
+        setPhoneValidationMessage('');
+      } else {
+        const validation = validatePhoneNumber(formData.countryCode, value);
+        setPhoneValidationMessage(validation.valid ? '' : validation.message);
+      }
+    }
   };
 
   const handleSelectChange = (name, value) => {
@@ -106,6 +192,12 @@ const Home = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Re-validate phone when country code changes
+    if (name === 'countryCode' && formData.phone.trim() !== '') {
+      const validation = validatePhoneNumber(value, formData.phone);
+      setPhoneValidationMessage(validation.valid ? '' : validation.message);
+    }
   };
 
   const validateForm = () => {
@@ -127,10 +219,21 @@ const Home = () => {
       return false;
     }
     
-    if (!formData.phone.trim() || !/^[\d\s\-\+\(\)]{10,}$/.test(formData.phone)) {
+    // Enhanced phone validation
+    if (!formData.phone.trim()) {
       toast({
-        title: "Valid phone number is required",
-        description: "Please enter a valid phone number",
+        title: "Phone number is required",
+        description: "Please enter your phone number",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    const phoneValidation = validatePhoneNumber(formData.countryCode, formData.phone);
+    if (!phoneValidation.valid) {
+      toast({
+        title: "Invalid phone number",
+        description: phoneValidation.message,
         variant: "destructive"
       });
       return false;
@@ -170,6 +273,7 @@ const Home = () => {
           name: '',
           email: '',
           phone: '',
+          countryCode: '+91',
           course: '',
           grade: '',
           message: ''
@@ -195,6 +299,7 @@ const Home = () => {
           name: '',
           email: '',
           phone: '',
+          countryCode: '+91',
           course: '',
           grade: '',
           message: ''
@@ -415,13 +520,6 @@ const Home = () => {
                       >
                         View Schedule
                       </Button>
-                       {/* <Button 
-                        className="bg-[#39C93D] hover:bg-[#2db832] text-white"
-                        onClick={() => window.location.href = '/inquiry?course=' + activeTab}
-                      >
-                        Book Free Demo
-                      </Button>
-                       */}
                     </div>
                   </div>
                 </div>
@@ -594,16 +692,40 @@ const Home = () => {
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                           Phone Number *
                         </label>
-                        <Input
-                          id="phone"
-                          name="phone"
-                          type="tel"
-                          placeholder="Enter your phone number"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full"
-                        />
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <Select 
+                            value={formData.countryCode} 
+                            onValueChange={(value) => handleSelectChange('countryCode', value)}
+                          >
+                            <SelectTrigger className="w-full sm:w-32">
+                              <SelectValue placeholder="Select country code" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countryCodes.map((country) => (
+                                <SelectItem key={country.code} value={country.code}>
+                                  <span className="flex items-center gap-2">
+                                    <span>{country.flag}</span>
+                                    <span>{country.code}</span>
+                                    <span className="text-xs text-gray-500">({country.country})</span>
+                                  </span>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            placeholder="Enter your phone number"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            required
+                            className={`flex-1 ${phoneValidationMessage ? 'border-red-500' : ''}`}
+                          />
+                        </div>
+                        {phoneValidationMessage && (
+                          <p className="text-sm text-red-500 mt-1">{phoneValidationMessage}</p>
+                        )}
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

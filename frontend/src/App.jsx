@@ -10,6 +10,8 @@ import About from "./pages/About";
 import Courses from "./pages/Courses";
 import Gallery from "./pages/Gallery";
 import Toppers from "./pages/Toppers";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
@@ -38,6 +40,8 @@ const App = () => {
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/toppers" element={<Toppers />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/firebase-test" element={<FirebaseTest />} />
                 <Route path="/firebase-setup" element={<FirebaseSetup />} />

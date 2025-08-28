@@ -15,7 +15,6 @@ import About from './pages/About';
 import Courses from './pages/Courses';
 import Gallery from './pages/Gallery';
 import Toppers from './pages/Toppers';
-import Inquiry from './pages/Inquiry';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import FirebaseTest from './pages/FirebaseTest';
@@ -72,7 +71,6 @@ function App() {
               <Route path="/courses" element={<Courses />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/toppers" element={<Toppers />} />
-              <Route path="/inquiry" element={<Inquiry />} />
               <Route path="/login" element={
                 // Wrap Login in a container to ensure proper spacing
                 <div className="login-container">

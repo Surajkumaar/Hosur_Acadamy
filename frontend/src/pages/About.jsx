@@ -14,7 +14,7 @@ const About = () => {
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
         <div className="relative container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
-            <Badge className="bg-[#39C93D] text-white px-4 py-2 text-sm font-medium mb-6">
+            <Badge className="bg-[#39C93D] text-white px-4 py-2 text-sm font-medium mb-6 hover:bg-[#39C93D] cursor-default">
               About Hosur Toppers Academy
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6">
@@ -82,7 +82,7 @@ const About = () => {
                 <Users className="h-10 w-10" />
               </div>
               <div className="text-4xl font-bold text-[#002357] mb-2">{stats.studentsEnrolled}</div>
-              <div className="text-gray-600">Students Enrolled</div>
+              <div className="text-gray-600">Students Enrolled Per Year</div>
             </div>
             
             <div className="text-center group">
