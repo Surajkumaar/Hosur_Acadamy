@@ -1,30 +1,37 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
+import { scrollToElement } from '../utils/scrollEffects';
 
 const Banner = () => {
   const [current, setCurrent] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: true,
-    duration: 20
+    duration: 30, // Slower transitions for smoother effect
+    dragFree: false,
+    skipSnaps: false
   });
 
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  const handleEnrollClick = (e) => {
+  const handleEnrollClick = async (e) => {
     e.preventDefault();
-    const inquirySection = document.getElementById('inquiry-form');
-    if (inquirySection) {
-      inquirySection.scrollIntoView({ behavior: 'smooth' });
+    try {
+      await scrollToElement('inquiry-form', { 
+        offset: 100,
+        duration: 1000 
+      });
+      localStorage.setItem('enrollmentIntent', JSON.stringify({
+        timestamp: new Date().toISOString(),
+        source: 'banner_cta'
+      }));
+    } catch (error) {
+      console.warn('Scroll to inquiry form failed:', error);
     }
-    localStorage.setItem('enrollmentIntent', JSON.stringify({
-      timestamp: new Date().toISOString(),
-      source: 'banner_cta'
-    }));
   };
 
-  // Auto-play functionality with proper cleanup
+  // Auto-play functionality with improved timing
   useEffect(() => {
     if (!emblaApi) return;
 
@@ -32,7 +39,8 @@ const Banner = () => {
       setCurrent(emblaApi.selectedScrollSnap());
     });
 
-    const autoplay = setInterval(scrollNext, 10000);
+    // Smoother auto-play with longer intervals
+    const autoplay = setInterval(scrollNext, 8000); // Increased to 8 seconds
 
     // Cleanup function
     return () => {

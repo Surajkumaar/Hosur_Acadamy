@@ -11,6 +11,7 @@ import { useToast } from '../hooks/use-toast';
 import { mockData } from '../components/mock/mockData';
 import { sendInquiryEmail, sendAutoReplyEmail } from '../lib/emailjs-service';
 import Banner from '../components/Banner';
+import { scrollToElement, initScrollEffects } from '../utils/scrollEffects';
 
 // Common country codes
 const countryCodes = [
@@ -105,18 +106,25 @@ const Home = () => {
   const testimonials = mockData.testimonials;
   const stats = mockData.stats;
 
-  const handleEnrollClick = () => {
-    const inquirySection = document.getElementById('inquiry-form');
-    if (inquirySection) {
-      inquirySection.scrollIntoView({ behavior: 'smooth' });
+  const handleEnrollClick = async () => {
+    try {
+      await scrollToElement('inquiry-form', { 
+        offset: 100,
+        duration: 800 
+      });
+      localStorage.setItem('enrollmentIntent', JSON.stringify({
+        timestamp: new Date().toISOString(),
+        source: 'hero_cta'
+      }));
+    } catch (error) {
+      console.warn('Scroll to inquiry form failed:', error);
     }
-    localStorage.setItem('enrollmentIntent', JSON.stringify({
-      timestamp: new Date().toISOString(),
-      source: 'hero_cta'
-    }));
   };
 
   useEffect(() => {
+    // Initialize scroll effects for this page
+    initScrollEffects();
+    
     // Check if user has any stored preferences
     const enrollmentIntent = localStorage.getItem('enrollmentIntent');
     const courseInterest = localStorage.getItem('courseInterest');
@@ -145,16 +153,20 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // Handle hash-based navigation
-    const handleHashNavigation = () => {
+    // Enhanced hash navigation handling
+    const handleHashNavigation = async () => {
       const hash = window.location.hash;
       if (hash === '#inquiry-form') {
-        setTimeout(() => {
-          const inquirySection = document.getElementById('inquiry-form');
-          if (inquirySection) {
-            inquirySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 100);
+        try {
+          // Wait a bit longer for page elements to load
+          await new Promise(resolve => setTimeout(resolve, 200));
+          await scrollToElement('inquiry-form', { 
+            offset: 100,
+            duration: 1000 
+          });
+        } catch (error) {
+          console.warn('Hash navigation scroll failed:', error);
+        }
       }
     };
 
@@ -421,7 +433,7 @@ const Home = () => {
                 </div>
                 <Button 
                   onClick={handleEnrollClick}
-                  className="w-full bg-[#39C93D] hover:bg-[#2db832] text-white font-semibold"
+                  className="w-full bg-[#39C93D] hover:bg-[#2db832] text-white font-semibold btn-smooth pulse-on-hover transition-all duration-300"
                 >
                   Apply Now
                 </Button>
@@ -540,7 +552,7 @@ const Home = () => {
       {/* Success Stories Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 fade-in-on-scroll">
             <h2 className="text-3xl font-bold text-[#002357] mb-4">
               Success Stories That Inspire
             </h2>
@@ -550,8 +562,8 @@ const Home = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {mockData.toppers.slice(0, 3).map((topper) => (
-              <Card key={topper.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            {mockData.toppers.slice(0, 3).map((topper, index) => (
+              <Card key={topper.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 card-hover slide-up-on-scroll" style={{ '--child-index': index }}>
                 <CardContent className="p-6 text-center">
                   <div className="relative mb-6">
                     <div className="w-20 h-20 rounded-full mx-auto bg-gradient-to-br from-[#0052CC] to-[#39C93D] flex items-center justify-center border-4 border-[#39C93D]">
@@ -575,13 +587,13 @@ const Home = () => {
       {/* Features Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 fade-in-on-scroll">
             <h2 className="text-3xl font-bold text-[#002357] mb-4">
               Why Choose Hosur Toppers Academy?
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
             {[
               {
                 icon: <Users className="h-8 w-8" />,
@@ -608,7 +620,7 @@ const Home = () => {
                 color: "from-orange-500 to-orange-600"
               }
             ].map((feature, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 group slide-up-on-scroll" style={{ '--child-index': index }}>
                 <CardContent className="p-6 text-center">
                   <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-full flex items-center justify-center text-white mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     {feature.icon}

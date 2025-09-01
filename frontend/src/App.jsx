@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -26,8 +26,14 @@ import TestStudentLogin from "./pages/TestStudentLogin";
 import SessionTest from "./pages/SessionTest";
 import AdminSetup from "./pages/AdminSetup";
 import { Toaster } from "./components/ui/toaster";
+import { initScrollEffects } from "./utils/scrollEffects";
 
 const App = () => {
+  // Initialize global scroll effects
+  useEffect(() => {
+    initScrollEffects();
+  }, []);
+
   return (
     <div className="App">
       <AuthProvider>

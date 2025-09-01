@@ -4,6 +4,7 @@ import { ChevronDown, MessageCircle, LogIn, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { mockData } from './mock/mockData';
 import { useAuth } from '../contexts/AuthContext';
+import { navigateWithScroll } from '../utils/scrollEffects';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,11 +18,31 @@ const Header = () => {
   const userRole = userProfile?.role;
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      
+      // Update scroll state for backdrop changes
+      setIsScrolled(currentScrollY > 50);
+      
+      lastScrollY = currentScrollY;
+      ticking = false;
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const optimizedScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', optimizedScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', optimizedScroll);
+    };
   }, []);
 
   const navigation = [
@@ -58,16 +79,8 @@ const Header = () => {
       source: 'header_cta'
     }));
     
-    // If we're not on the home page, navigate to home first
-    if (location.pathname !== '/') {
-      window.location.href = '/#inquiry-form';
-    } else {
-      // If on home page, scroll to inquiry form
-      const inquirySection = document.getElementById('inquiry-form');
-      if (inquirySection) {
-        inquirySection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
+    // Use enhanced navigation with scroll
+    navigateWithScroll('/', 'inquiry-form', 100);
   };
 
   return (

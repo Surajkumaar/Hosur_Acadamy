@@ -1,20 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FileText, Scale, AlertTriangle, BookOpen } from 'lucide-react';
+import { initScrollEffects, scrollToTop } from '../utils/scrollEffects';
+import BackToTop from '../components/BackToTop';
 
 const Terms = () => {
+  // Initialize scroll effects for this page
+  useEffect(() => {
+    // Scroll to top when component mounts
+    scrollToTop(0);
+    // Initialize scroll effects
+    initScrollEffects();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       {/* Hero Section with Image */}
-      <div className="relative bg-gradient-to-br from-[#0052CC] via-[#002357] to-[#0052CC] text-white py-20">
+      <div className="relative bg-gradient-to-br from-[#0052CC] via-[#002357] to-[#0052CC] text-white py-20 fade-in-on-scroll">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6">
-              <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm float-animation">
                 <FileText className="w-12 h-12 text-white" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Terms of Service</h1>
-            <p className="text-xl text-blue-100">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 slide-up-on-scroll">Terms of Service</h1>
+            <p className="text-xl text-blue-100 slide-up-on-scroll">
               Our terms and conditions for using Hosur Academy's educational services.
             </p>
           </div>
@@ -32,9 +42,9 @@ const Terms = () => {
 
       {/* Content Section */}
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto stagger-children">
           {/* Introduction */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8 card-hover slide-up-on-scroll" style={{ '--child-index': 0 }}>
             <div className="flex items-center mb-4">
               <BookOpen className="w-6 h-6 text-[#0052CC] mr-3" />
               <h2 className="text-2xl font-bold text-gray-900">Introduction</h2>
@@ -47,7 +57,7 @@ const Terms = () => {
           </div>
 
           {/* Acceptance of Terms */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8 card-hover slide-up-on-scroll" style={{ '--child-index': 1 }}>
             <div className="flex items-center mb-4">
               <Scale className="w-6 h-6 text-[#0052CC] mr-3" />
               <h2 className="text-2xl font-bold text-gray-900">Acceptance of Terms</h2>
@@ -67,7 +77,7 @@ const Terms = () => {
           </div>
 
           {/* Educational Services */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8 card-hover slide-up-on-scroll" style={{ '--child-index': 2 }}>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Educational Services</h2>
             <div className="space-y-4">
               <div>
@@ -92,7 +102,7 @@ const Terms = () => {
           </div>
 
           {/* Terms Image Section */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8 card-hover slide-up-on-scroll" style={{ '--child-index': 3 }}>
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">User Responsibilities</h2>
@@ -108,7 +118,7 @@ const Terms = () => {
                 </ul>
               </div>
               <div className="flex-shrink-0">
-                <div className="w-48 h-48 bg-gradient-to-br from-[#39C93D]/10 to-[#0052CC]/10 rounded-lg flex items-center justify-center">
+                <div className="w-48 h-48 bg-gradient-to-br from-[#39C93D]/10 to-[#0052CC]/10 rounded-lg flex items-center justify-center hover-lift">
                   <img 
                     src="/sub.png" 
                     alt="Hosur Academy - Quality Education" 
@@ -120,7 +130,7 @@ const Terms = () => {
           </div>
 
           {/* Payment and Refund Policy */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8 card-hover slide-up-on-scroll" style={{ '--child-index': 4 }}>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Payment and Refund Policy</h2>
             <div className="space-y-4">
               <div>
@@ -145,12 +155,12 @@ const Terms = () => {
           </div>
 
           {/* Limitation of Liability */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8 card-hover slide-up-on-scroll" style={{ '--child-index': 5 }}>
             <div className="flex items-center mb-4">
               <AlertTriangle className="w-6 h-6 text-amber-600 mr-3" />
               <h2 className="text-2xl font-bold text-gray-900">Limitation of Liability</h2>
             </div>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4 animate-scale-in">
               <p className="text-amber-800 text-sm">
                 <strong>Important:</strong> Please read this section carefully as it limits our liability.
               </p>
@@ -168,7 +178,7 @@ const Terms = () => {
           </div>
 
           {/* Termination */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8 card-hover slide-up-on-scroll" style={{ '--child-index': 6 }}>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Termination</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               We reserve the right to terminate or suspend your account and access to our services immediately, 
@@ -183,7 +193,7 @@ const Terms = () => {
           </div>
 
           {/* Contact Information */}
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="bg-white rounded-lg shadow-md p-8 card-hover slide-up-on-scroll" style={{ '--child-index': 7 }}>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               If you have any questions about these Terms of Service, please contact us:
@@ -199,6 +209,9 @@ const Terms = () => {
           </div>
         </div>
       </div>
+      
+      {/* Back to Top Button */}
+      <BackToTop />
     </div>
   );
 };

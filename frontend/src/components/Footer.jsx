@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 import { mockData } from './mock/mockData';
+import { navigationManager } from '../utils/navigationManager';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -35,40 +36,9 @@ const Footer = () => {
     window.open(`https://wa.me/${mockData.institute.whatsapp.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
   };
 
-  const handleQuickLinkClick = (path, linkName) => {
-    if (linkName === 'Contact') {
-      // Special handling for Contact link - scroll to inquiry form
-      if (window.location.pathname === '/') {
-        // If already on home page, just scroll to the inquiry form
-        const inquirySection = document.getElementById('inquiry-form');
-        if (inquirySection) {
-          inquirySection.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      } else {
-        // If not on home page, navigate to home and then scroll
-        window.location.href = '/#inquiry-form';
-      }
-    } else {
-      // For other links, scroll to top smoothly
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-      
-      // Small delay to ensure smooth scroll starts before navigation
-      setTimeout(() => {
-        if (path.startsWith('/#')) {
-          // Handle hash links
-          window.location.href = path;
-        } else {
-          // Handle regular routes
-          window.location.href = path;
-        }
-      }, 100);
-    }
+  const handleQuickLinkClick = (path, linkName, event) => {
+    event.preventDefault();
+    navigationManager.handleFooterLink(path, linkName, event.currentTarget);
   };
 
   return (
@@ -100,9 +70,6 @@ const Footer = () => {
               <a href="https://www.instagram.com/hosurtopperss?igsh=MTh0cGZhcTZ0Mm13MQ==" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
-                <Twitter className="h-4 w-4" />
-              </a>
               <a href="https://youtube.com/@sindhujarajan5055?si=Ohr8TQFHqC3jXqsV" className="w-8 h-8 bg-[#0052CC] rounded-full flex items-center justify-center hover:bg-[#0041a3] transition-colors">
                 <Youtube className="h-4 w-4" />
               </a>
@@ -116,8 +83,8 @@ const Footer = () => {
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <button
-                    onClick={() => handleQuickLinkClick(link.path, link.name)}
-                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm text-left cursor-pointer"
+                    onClick={(e) => handleQuickLinkClick(link.path, link.name, e)}
+                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm text-left cursor-pointer footer-link w-full"
                   >
                     {link.name}
                   </button>
@@ -133,8 +100,8 @@ const Footer = () => {
               {courses.map((course) => (
                 <li key={course}>
                   <button
-                    onClick={() => handleQuickLinkClick('/courses', course)}
-                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm text-left cursor-pointer"
+                    onClick={(e) => handleQuickLinkClick('/courses', course, e)}
+                    className="text-gray-300 hover:text-[#39C93D] transition-colors text-sm text-left cursor-pointer footer-link w-full"
                   >
                     {course}
                   </button>

@@ -5,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { mockData } from '../components/mock/mockData';
+import { navigateWithScroll } from '../utils/scrollEffects';
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -12,26 +13,8 @@ const Courses = () => {
   const [error, setError] = useState(null);
 
   const handleContactClick = () => {
-    // First navigate to home page
-    navigate('/');
-    
-    // Wait for navigation to complete, then scroll
-    const scrollToContact = () => {
-      const inquirySection = document.getElementById('inquiry-form');
-      if (inquirySection) {
-        // Scroll to the element
-        inquirySection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      } else {
-        // If element not found, try again after a short delay
-        setTimeout(scrollToContact, 100);
-      }
-    };
-    
-    // Start trying to scroll after a brief delay
-    setTimeout(scrollToContact, 200);
+    // Use enhanced navigation with scroll
+    navigateWithScroll('/', 'inquiry-form', 200);
   };
 
   const courses = mockData.courses;
@@ -46,8 +29,8 @@ const Courses = () => {
       courseName: course.title,
       timestamp: new Date().toISOString()
     }));
-    // Navigate to home page and scroll to inquiry form
-    window.location.href = '/#inquiry-form';
+    // Use enhanced navigation with scroll
+    navigateWithScroll('/', 'inquiry-form', 100);
   };
 
   if (loading) {

@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { mockData } from '../components/mock/mockData';
+import { scrollToElement, navigateWithScroll, initScrollEffects } from '../utils/scrollEffects';
 
 const Toppers = () => {
   const [loading, setLoading] = useState(false);
@@ -23,15 +24,26 @@ const Toppers = () => {
       exam: topper.exam,
       timestamp: new Date().toISOString()
     }));
-    window.location.href = '/#inquiry-form';
+    
+    // Use enhanced navigation with scroll
+    navigateWithScroll('/', 'inquiry-form', 100);
   };
 
   useEffect(() => {
+    // Initialize scroll effects for this page
+    initScrollEffects();
+    
     if (window.location.hash === '#top-achievers') {
-      const element = document.getElementById('top-achievers');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      setTimeout(async () => {
+        try {
+          await scrollToElement('top-achievers', { 
+            offset: 80,
+            duration: 1000 
+          });
+        } catch (error) {
+          console.warn('Scroll to top achievers failed:', error);
+        }
+      }, 100);
     }
   }, []);
 
@@ -90,8 +102,8 @@ const Toppers = () => {
           ) : (
             <div className="flex justify-center">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl">
-                {displayedToppers.map((topper) => (
-                <Card key={topper.id} className="border-0 shadow-lg h-full flex flex-col">
+                {displayedToppers.map((topper, index) => (
+                <Card key={topper.id} className="border-0 shadow-lg h-full flex flex-col card-hover slide-up-on-scroll" style={{ '--child-index': index }}>
                   <CardHeader className="text-center pb-4">
                     <div className="relative mb-4">
                       <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-[#39C93D] to-[#2db832] border-4 border-[#39C93D] flex items-center justify-center">
@@ -150,7 +162,7 @@ const Toppers = () => {
       {/* Success Statistics */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 fade-in-on-scroll">
             <h2 className="text-4xl font-bold text-[#002357] mb-4">
               Success Statistics
             </h2>
@@ -159,8 +171,8 @@ const Toppers = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
+            <div className="text-center slide-up-on-scroll" style={{ '--child-index': 0 }}>
               <div className="w-16 h-16 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-full flex items-center justify-center text-white mx-auto mb-4">
                 <Trophy className="h-8 w-8" />
               </div>
@@ -168,7 +180,7 @@ const Toppers = () => {
               <div className="text-gray-600">Top Rankers</div>
             </div>
             
-            <div className="text-center">
+            <div className="text-center slide-up-on-scroll" style={{ '--child-index': 1 }}>
               <div className="w-16 h-16 bg-gradient-to-br from-[#39C93D] to-[#0052CC] rounded-full flex items-center justify-center text-white mx-auto mb-4">
                 <Medal className="h-8 w-8" />
               </div>
@@ -176,7 +188,7 @@ const Toppers = () => {
               <div className="text-gray-600">Success Rate</div>
             </div>
             
-            <div className="text-center">
+            <div className="text-center slide-up-on-scroll" style={{ '--child-index': 2 }}>
               <div className="w-16 h-16 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-full flex items-center justify-center text-white mx-auto mb-4">
                 <Award className="h-8 w-8" />
               </div>
@@ -184,7 +196,7 @@ const Toppers = () => {
               <div className="text-gray-600">AIR Top 100</div>
             </div>
             
-            <div className="text-center">
+            <div className="text-center slide-up-on-scroll" style={{ '--child-index': 3 }}>
               <div className="w-16 h-16 bg-gradient-to-br from-[#39C93D] to-[#0052CC] rounded-full flex items-center justify-center text-white mx-auto mb-4">
                 <Target className="h-8 w-8" />
               </div>
@@ -258,16 +270,13 @@ const Toppers = () => {
               size="lg" 
               className="bg-white text-[#0052CC] hover:bg-gray-100 px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:scale-105"
               onClick={() => {
-                // If we're not on the home page, navigate to home first
-                if (window.location.pathname !== '/') {
-                  window.location.href = '/#inquiry-form';
-                } else {
-                  // If on home page, scroll to inquiry form
-                  const inquirySection = document.getElementById('inquiry-form');
-                  if (inquirySection) {
-                    inquirySection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }
+                localStorage.setItem('enrollmentIntent', JSON.stringify({
+                  timestamp: new Date().toISOString(),
+                  source: 'toppers_cta'
+                }));
+                
+                // Use enhanced navigation with scroll
+                navigateWithScroll('/', 'inquiry-form', 100);
               }}
             >
               Start Your Journey
