@@ -354,7 +354,7 @@ const Home = () => {
     },
     jee: {
       title: "JEE Main & Advanced",
-      description: "Comprehensive engineering entrance exam preparation with expert faculty and proven results",
+      description: "we are introducing JEE and NEET so no need to mention success rate and toppers in both sections",
       image: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=600&h=400&fit=crop",
       features: ["Live Classes", "Mock Tests", "Doubt Clearing", "Study Material"],
       successRate: "95%",

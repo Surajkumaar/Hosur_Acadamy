@@ -141,14 +141,22 @@ const Banner = () => {
       </button>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1">
         {banners.map((_, index) => (
-          <button
+          <div
             key={index}
             onClick={() => emblaApi?.scrollTo(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              current === index ? 'bg-white w-4' : 'bg-white/50'
+            className={`rounded-full transition-all cursor-pointer ${
+              current === index 
+                ? 'bg-white' 
+                : 'bg-white/50'
             }`}
+            style={{
+              width: current === index ? '8px' : '4px',
+              height: '4px'
+            }}
+            role="button"
+            tabIndex={0}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

@@ -7,7 +7,6 @@ import {
   onAuthStateChanged,
 } from '../lib/firebase';
 import { getUserProfile } from '../lib/user-profile';
-import { login as apiLogin, getUser as apiGetUser } from '../lib/api';
 import sessionManager from '../lib/session-manager';
 
 const AuthContext = createContext(null);
@@ -18,33 +17,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
   const [isFirebaseReady, setIsFirebaseReady] = useState(false);
-  const [authType, setAuthType] = useState(null); // 'firebase' or 'api'
 
   useEffect(() => {
-    // Check for page refresh scenario first
-    if (sessionManager.isPageRefresh()) {
-      console.log('🔄 Auth: Page refresh detected - forcing logout');
-      sessionManager.forceLogoutOnRefresh();
-      setLoading(false);
-      return;
-    }
-
-    // Check for existing API token first
-    const token = localStorage.getItem('token');
-    if (token && sessionManager.isSessionActive()) {
-      handleApiTokenAuth(token);
-      return;
-    }
-
-    // If token exists but no active session, it's a page refresh
-    if (token && !sessionManager.isSessionActive()) {
-      console.log('🔄 API token exists but no active session - forcing logout');
-      sessionManager.forceLogoutOnRefresh();
-      setLoading(false);
-      return;
-    }
-
-    // Handle page refresh/navigation detection for Firebase
+    // Handle page refresh/navigation detection
     const handleBeforeUnload = () => {
       // Clear session flag on page unload
       sessionStorage.removeItem('auth_session_active');
@@ -106,15 +81,7 @@ export const AuthProvider = ({ children }) => {
       async (user) => {
         console.log("🔄 Auth state changed, user:", user?.email || 'none');
         
-        // If user exists but session manager detected a refresh, force logout
-        if (user && sessionManager.isPageRefresh()) {
-          console.log('🔄 User exists but page was refreshed - forcing logout');
-          await sessionManager.forceLogoutOnRefresh();
-          return;
-        }
-        
         setCurrentUser(user);
-        setAuthType(user ? 'firebase' : null);
         
         if (user) {
           // Set session flag to indicate active authentication
@@ -181,41 +148,6 @@ export const AuthProvider = ({ children }) => {
       unsubscribeSession();
     };
   }, []);
-
-  const handleApiTokenAuth = async (token) => {
-    try {
-      console.log("🔄 Checking API token authentication");
-      const userData = await apiGetUser();
-      
-      if (userData) {
-        console.log("✅ API authentication successful:", userData);
-        
-        // Initialize session for API auth
-        const apiUser = {
-          email: userData.email,
-          uid: userData.email,
-        };
-        
-        sessionManager.initSession(apiUser, 'api');
-        
-        setAuthType('api');
-        setCurrentUser(apiUser);
-        setUserProfile({
-          email: userData.email,
-          role: userData.role,
-          displayName: userData.email,
-          rollNumber: userData.roll_number,
-          roll_no: userData.roll_number,
-          isApiAuth: true
-        });
-      }
-    } catch (error) {
-      console.error("❌ API token validation failed:", error);
-      localStorage.removeItem('token'); // Remove invalid token
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Sign in with email and password
   const login = async (email, password) => {
