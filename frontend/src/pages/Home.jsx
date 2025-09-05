@@ -361,10 +361,10 @@ const Home = () => {
       toppers: "250+"
     },
     neet: {
-      title: "NEET Preparation",
-      description: "Complete medical entrance exam preparation with specialized coaching and practice tests",
+      title: "NEETPreparation",
+      description: "Launching our new program for medical and engineering aspirants, built upon our 23 years of foundation course excellence.",
       image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop",
-      features: ["Expert Faculty", "Practice Tests", "Performance Analysis", "Study Notes"],
+      features:  ["Expert Faculty", "Comprehensive Mock Tests", "Doubt Clearing Sessions", "Updated Study Material"],
       successRate: "92%",
       toppers: "180+"
     }

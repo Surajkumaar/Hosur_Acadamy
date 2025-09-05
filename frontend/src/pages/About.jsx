@@ -94,7 +94,7 @@ const About = () => {
             </div>
             
             <div className="text-center group">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-full flex items-center justify-center text-white mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-full flex items-center justify-center text-white mx-auto mb-4">
                 <Star className="h-10 w-10" />
               </div>
               <div className="text-4xl font-bold text-[#002357] mb-2">{stats.experienceYears}</div>
@@ -161,7 +161,7 @@ const About = () => {
               {
       name: "R. Sindhuja Rajan",
       subject: "Math & Physics",
-      experience: "15+ years",
+      experience: "25+ years",
       image: "https://images.unsplash.com/photo-1580894908361-967195033215?w=300&h=300&fit=crop&crop=face",
       qualifications: "MSc. B.ed"
     },
@@ -180,7 +180,7 @@ const About = () => {
       qualifications: "Foundation Course Expert"
     }
             ].map((faculty, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+              <Card key={index} className="border-0 shadow-lg">
                 <CardContent className="p-8 text-center">
                   <div className="relative mb-6">
                     <div className="w-24 h-24 rounded-full mx-auto bg-gradient-to-br from-[#0052CC] to-[#39C93D] flex items-center justify-center">
@@ -193,7 +193,7 @@ const About = () => {
                   <h3 className="text-xl font-bold text-[#002357] mb-2">{faculty.name}</h3>
                   <p className="text-[#0052CC] font-medium mb-1">{faculty.subject}</p>
                   <p className="text-gray-600 text-sm mb-3">{faculty.qualifications}</p>
-                  <Badge className="bg-[#39C93D] text-white">
+                  <Badge className="bg-[#39C93D] text-white hover:bg-[#39C93D] cursor-default">
                     {faculty.experience}
                   </Badge>
                 </CardContent>

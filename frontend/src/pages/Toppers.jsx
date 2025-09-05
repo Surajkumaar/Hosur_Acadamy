@@ -124,7 +124,7 @@ const Toppers = () => {
                   <CardContent className="space-y-4 flex-grow flex flex-col">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-[#0052CC] mb-1">{topper.score}</div>
-                      <div className="text-sm text-gray-600">Score Achieved</div>
+      
                     </div>
                     
                     <div className="bg-gray-50 p-4 rounded-lg">
