@@ -183,8 +183,9 @@ courses: [
   ],
   
   stats: {
-    studentsEnrolled: "23+",
-    successRate: "100%",
+    studentsEnrolled: "100+",
+    experience:"23+",
+    successRate: "95%",
     experienceYears: "25+", // Calculated from establishment year 2002
     facultyCount: "3 Core Experts"
   },

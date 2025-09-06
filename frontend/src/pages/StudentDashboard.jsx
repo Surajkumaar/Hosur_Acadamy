@@ -32,7 +32,7 @@ const StudentDashboard = () => {
 
   const handleSearch = async (searchRollNumber = rollNumber) => {
     if (!searchRollNumber.trim()) {
-      alert('Please enter a roll number');
+      alert('Please enter your email id');
       return;
     }
 
@@ -318,7 +318,7 @@ const StudentDashboard = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   type="text"
-                  placeholder="Enter your roll number"
+                  placeholder="Enter your Email id"
                   value={rollNumber}
                   onChange={(e) => setRollNumber(e.target.value)}
                   className="pl-10"

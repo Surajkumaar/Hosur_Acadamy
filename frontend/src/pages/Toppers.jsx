@@ -192,15 +192,15 @@ const Toppers = () => {
               <div className="w-16 h-16 bg-gradient-to-br from-[#0052CC] to-[#39C93D] rounded-full flex items-center justify-center text-white mx-auto mb-4">
                 <Award className="h-8 w-8" />
               </div>
-              <div className="text-3xl font-bold text-[#0052CC] mb-2">50+</div>
-              <div className="text-gray-600">AIR Top 100</div>
+              <div className="text-3xl font-bold text-[#0052CC] mb-2">90%</div>
+              <div className="text-gray-600">Success Rate in CBSE and ICSE</div>
             </div>
             
             <div className="text-center slide-up-on-scroll" style={{ '--child-index': 3 }}>
               <div className="w-16 h-16 bg-gradient-to-br from-[#39C93D] to-[#0052CC] rounded-full flex items-center justify-center text-white mx-auto mb-4">
                 <Target className="h-8 w-8" />
               </div>
-              <div className="text-3xl font-bold text-[#0052CC] mb-2">15+</div>
+              <div className="text-3xl font-bold text-[#0052CC] mb-2">25+</div>
               <div className="text-gray-600">Years of Excellence</div>
             </div>
           </div>
@@ -232,7 +232,7 @@ const Toppers = () => {
                 Our foundation program is designed to ensure top performance in board examinations, leading to a 100% success rate. We're proud of students like Mrithun Dharsha who scored an outstanding 480/500.
               </p>
               <div className="bg-[#0052CC] bg-opacity-10 rounded-lg p-6">
-                <div className="text-3xl font-bold text-[#0052CC] mb-2">200+</div>
+                <div className="text-3xl font-bold text-[#0052CC] mb-2">100+</div>
                 <div className="text-lg font-semibold text-[#002357]">Board Toppers</div>
               </div>
             </div>

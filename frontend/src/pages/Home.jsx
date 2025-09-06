@@ -348,25 +348,19 @@ const Home = () => {
       title: "Foundation Courses",
       description: "Strong foundation building for grades 9-12 with conceptual learning approach",
       image: "https://images.unsplash.com/photo-1635372722656-389f87a941b7?w=600&h=400&fit=crop",
-      features: ["Conceptual Learning", "Problem Solving", "Regular Assessment", "Doubt Support"],
-      successRate: "98%",
-      toppers: "500+"
+      features: ["Conceptual Learning", "Problem Solving", "Regular Assessment", "Doubt Support"]
     },
     jee: {
       title: "JEE Main & Advanced",
-      description: "we are introducing JEE and NEET so no need to mention success rate and toppers in both sections",
+      description: "Launching our new program for medical and engineering aspirants, built upon our 23 years of foundation course excellence.",
       image: "https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=600&h=400&fit=crop",
-      features: ["Live Classes", "Mock Tests", "Doubt Clearing", "Study Material"],
-      successRate: "95%",
-      toppers: "250+"
+      features: ["Live Classes", "Mock Tests", "Doubt Clearing", "Study Material"]
     },
     neet: {
-      title: "NEETPreparation",
+      title: "NEET Preparation",
       description: "Launching our new program for medical and engineering aspirants, built upon our 23 years of foundation course excellence.",
       image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop",
-      features:  ["Expert Faculty", "Comprehensive Mock Tests", "Doubt Clearing Sessions", "Updated Study Material"],
-      successRate: "92%",
-      toppers: "180+"
+      features:  ["Expert Faculty", "Comprehensive Mock Tests", "Doubt Clearing Sessions", "Updated Study Material"]
     }
   };
 
@@ -423,7 +417,7 @@ const Home = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#39C93D]">{stats.studentsEnrolled}</div>
+                    <div className="text-2xl font-bold text-[#39C93D]">{stats.experience}</div>
                     <div className="text-sm text-gray-200">Experience</div>
                   </div>
                   <div className="text-center">
@@ -495,21 +489,6 @@ const Home = () => {
                       <p className="text-gray-600 text-lg">
                         {tabData[activeTab].description}
                       </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-[#39C93D] bg-opacity-10 p-4 rounded-lg text-center">
-                        <div className="text-2xl font-bold text-[#39C93D]">
-                          {tabData[activeTab].successRate}
-                        </div>
-                        <div className="text-sm text-gray-600">Success Rate</div>
-                      </div>
-                      <div className="bg-[#0052CC] bg-opacity-10 p-4 rounded-lg text-center">
-                        <div className="text-2xl font-bold text-[#0052CC]">
-                          {tabData[activeTab].toppers}
-                        </div>
-                        <div className="text-sm text-gray-600">Toppers</div>
-                      </div>
                     </div>
                     
                     <div>
